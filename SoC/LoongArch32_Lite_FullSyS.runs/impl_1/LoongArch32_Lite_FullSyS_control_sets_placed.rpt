@@ -1,7 +1,7 @@
 Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
-| Date         : Fri Sep  1 13:01:38 2023
+| Date         : Tue Sep  5 14:24:08 2023
 | Host         : LAPTOP-BEASOA6F running 64-bit major release  (build 9200)
 | Command      : report_control_sets -verbose -file LoongArch32_Lite_FullSyS_control_sets_placed.rpt
 | Design       : LoongArch32_Lite_FullSyS
@@ -23,11 +23,11 @@ Table of Contents
 +----------------------------------------------------------+-------+
 |                          Status                          | Count |
 +----------------------------------------------------------+-------+
-| Total control sets                                       |    10 |
-|    Minimum number of control sets                        |    10 |
+| Total control sets                                       |    11 |
+|    Minimum number of control sets                        |    11 |
 |    Addition due to synthesis replication                 |     0 |
 |    Addition due to physical synthesis replication        |     0 |
-| Unused register locations in slices containing registers |    27 |
+| Unused register locations in slices containing registers |    34 |
 +----------------------------------------------------------+-------+
 * Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
 ** Run report_qor_suggestions for automated merging and remapping suggestions
@@ -39,8 +39,8 @@ Table of Contents
 +--------------------+-------+
 |       Fanout       | Count |
 +--------------------+-------+
-| Total control sets |    10 |
-| >= 0 to < 4        |     1 |
+| Total control sets |    11 |
+| >= 0 to < 4        |     2 |
 | >= 4 to < 6        |     0 |
 | >= 6 to < 8        |     0 |
 | >= 8 to < 10       |     4 |
@@ -58,10 +58,10 @@ Table of Contents
 +--------------+-----------------------+------------------------+-----------------+--------------+
 | Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
 +--------------+-----------------------+------------------------+-----------------+--------------+
-| No           | No                    | No                     |              33 |           12 |
-| No           | No                    | Yes                    |              12 |            5 |
-| No           | Yes                   | No                     |              81 |           27 |
-| Yes          | No                    | No                     |              55 |           12 |
+| No           | No                    | No                     |              31 |            9 |
+| No           | No                    | Yes                    |              75 |           25 |
+| No           | Yes                   | No                     |              21 |            6 |
+| Yes          | No                    | No                     |              55 |           11 |
 | Yes          | No                    | Yes                    |               0 |            0 |
 | Yes          | Yes                   | No                     |               0 |            0 |
 +--------------+-----------------------+------------------------+-----------------+--------------+
@@ -70,19 +70,20 @@ Table of Contents
 4. Detailed Control Set Information
 -----------------------------------
 
-+------------------------+---------------------------------------------------+---------------------------------------------+------------------+----------------+
-|      Clock Signal      |                   Enable Signal                   |               Set/Reset Signal              | Slice Load Count | Bel Load Count |
-+------------------------+---------------------------------------------------+---------------------------------------------+------------------+----------------+
-|  sys_clk_25M_IBUF_BUFG | ext_uart_r/tickgen/OversamplingTick               |                                             |                1 |              1 |
-|  sys_clk_25M_IBUF_BUFG | ext_uart_r/tickgen/FSM_onehot_RxD_state_reg[2][0] |                                             |                1 |              8 |
-|  sys_clk_25M_IBUF_BUFG | ext_uart_r/E[0]                                   |                                             |                1 |              8 |
-|  sys_clk_25M_IBUF_BUFG | ext_uart_t/tickgen/Acc_reg[20]_0[0]               |                                             |                2 |              8 |
-|  sys_clk_25M_IBUF_BUFG | ext_uart_t/FSM_onehot_TxD_state_reg[0]_0[0]       |                                             |                2 |              8 |
-|  sys_clk_25M_IBUF_BUFG | ext_uart_r/tickgen/RxD_bit_reg_0[0]               |                                             |                2 |             11 |
-|  sys_clk_25M_IBUF_BUFG | ext_uart_t/tickgen/E[0]                           |                                             |                3 |             11 |
-|  sys_clk_25M_IBUF_BUFG |                                                   | ext_uart_t/FSM_onehot_TxD_state_reg_n_0_[0] |                6 |             21 |
-|  sys_clk_25M_IBUF_BUFG |                                                   |                                             |               12 |             33 |
-|  sys_clk_25M_IBUF_BUFG |                                                   | segL/U0/SS[0]                               |               26 |             72 |
-+------------------------+---------------------------------------------------+---------------------------------------------+------------------+----------------+
++-------------------------+---------------------------------------------------+---------------------------------------------+------------------+----------------+
+|       Clock Signal      |                   Enable Signal                   |               Set/Reset Signal              | Slice Load Count | Bel Load Count |
++-------------------------+---------------------------------------------------+---------------------------------------------+------------------+----------------+
+|  clk_sync0/inst/clk_out |                                                   | rst_n_i_1_n_0                               |                1 |              1 |
+|  clk_sync0/inst/clk_out | ext_uart_r/tickgen/OversamplingTick               |                                             |                1 |              1 |
+|  clk_sync0/inst/clk_out | ext_uart_r/tickgen/FSM_onehot_RxD_state_reg[2][0] |                                             |                1 |              8 |
+|  clk_sync0/inst/clk_out | ext_uart_r/E[0]                                   |                                             |                1 |              8 |
+|  clk_sync0/inst/clk_out | ext_uart_t/tickgen/Acc_reg[20]_0[0]               |                                             |                2 |              8 |
+|  clk_sync0/inst/clk_out | ext_uart_t/FSM_onehot_TxD_state_reg[0]_0[0]       |                                             |                2 |              8 |
+|  clk_sync0/inst/clk_out | ext_uart_r/tickgen/RxD_bit_reg_0[0]               |                                             |                2 |             11 |
+|  clk_sync0/inst/clk_out | ext_uart_t/tickgen/E[0]                           |                                             |                2 |             11 |
+|  clk_sync0/inst/clk_out |                                                   | ext_uart_t/FSM_onehot_TxD_state_reg_n_0_[0] |                6 |             21 |
+|  clk_sync0/inst/clk_out |                                                   |                                             |                9 |             31 |
+|  clk_sync0/inst/clk_out |                                                   | segH/U0/rst_n_reg                           |               24 |             74 |
++-------------------------+---------------------------------------------------+---------------------------------------------+------------------+----------------+
 
 

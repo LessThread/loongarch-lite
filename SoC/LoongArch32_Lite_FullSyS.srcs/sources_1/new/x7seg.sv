@@ -18,8 +18,8 @@ module x7seg_scan(
                 
     logic [1 : 0] r_cnt;
     
-    always_ff @(posedge sys_clk) begin
-        if (!sys_rst_n) r_cnt <= 2'b00;
+    always_ff @(posedge sys_clk or negedge sys_rst_n) begin
+        if (~sys_rst_n) r_cnt <= 2'b00;
         else if (clk_flag) begin
             if (r_cnt == STUBNUM - 1) r_cnt <= 2'b00;
             else r_cnt <= r_cnt + 1;
@@ -27,8 +27,8 @@ module x7seg_scan(
         else r_cnt <= r_cnt;
     end
     
-    always_ff @(posedge sys_clk) begin
-        if (!sys_rst_n) an <= 4'b1111;
+    always_ff @(posedge sys_clk or negedge sys_rst_n) begin
+        if (~sys_rst_n) an <= 4'b1111;
         else begin
             case (r_cnt)
                 2'b00 : an <= AN0;
@@ -39,8 +39,8 @@ module x7seg_scan(
         end
     end
     
-    always_ff @(posedge sys_clk) begin
-        if (!sys_rst_n) x7seg_data <= 4'b0000;
+    always_ff @(posedge sys_clk or negedge sys_rst_n) begin
+        if (~sys_rst_n) x7seg_data <= 4'b0000;
         else begin
             case (r_cnt)
                 2'b00 : x7seg_data <= iDIGL[3 : 0];
@@ -123,7 +123,7 @@ module clken(
     
     logic   [N - 1 : 0] r_cnt;
     
-    always_ff @(posedge sys_clk) begin
+    always_ff @(posedge sys_clk or negedge sys_rst_n) begin
     
         if(!sys_rst_n)  r_cnt <= 0;
         else if (r_cnt == CNT_MAX - 1)    r_cnt <= 0;
@@ -131,7 +131,7 @@ module clken(
     
     end
     
-    always_ff @(posedge sys_clk) begin
+    always_ff @(posedge sys_clk or negedge sys_rst_n) begin
     
         if(!sys_rst_n)  clk_flag = 1'b0;
         else if (r_cnt == CNT_MAX - 1)    clk_flag <= 1'b1;

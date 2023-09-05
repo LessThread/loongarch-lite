@@ -23,8 +23,10 @@ create_project -in_memory -part xc7a35tftg256-1
 set_param project.singleFileAddWarning.threshold 0
 set_param project.compositeFile.enableAutoGeneration 0
 set_param synth.vivado.isSynthRun true
+set_msg_config -source 4 -id {IP_Flow 19-2162} -severity warning -new_severity info
 set_property webtalk.parent_dir D:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.cache/wt [current_project]
 set_property parent.project_path D:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.xpr [current_project]
+set_property XPM_LIBRARIES XPM_CDC [current_project]
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language Verilog [current_project]
 set_property ip_output_repo d:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.cache/ip [current_project]
@@ -35,6 +37,11 @@ read_verilog -library xil_defaultlib -sv {
   D:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv
   D:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.srcs/sources_1/new/LoongArch32_Lite_FullSyS.sv
 }
+read_ip -quiet d:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.srcs/sources_1/ip/clk_sync/clk_sync.xci
+set_property used_in_implementation false [get_files -all d:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.srcs/sources_1/ip/clk_sync/clk_sync_board.xdc]
+set_property used_in_implementation false [get_files -all d:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.srcs/sources_1/ip/clk_sync/clk_sync.xdc]
+set_property used_in_implementation false [get_files -all d:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.srcs/sources_1/ip/clk_sync/clk_sync_ooc.xdc]
+
 # Mark all dcp files as not used in implementation to prevent them from being
 # stitched into the results of this synthesis run. Any black boxes in the
 # design are intentionally left as such for best results. Dcp files will be

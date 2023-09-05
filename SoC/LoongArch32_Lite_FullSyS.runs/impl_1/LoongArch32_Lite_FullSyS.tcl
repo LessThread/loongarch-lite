@@ -73,7 +73,9 @@ set rc [catch {
   set_property parent.project_path D:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.xpr [current_project]
   set_property ip_output_repo D:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.cache/ip [current_project]
   set_property ip_cache_permissions {read write} [current_project]
+  set_property XPM_LIBRARIES XPM_CDC [current_project]
   add_files -quiet D:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.runs/synth_1/LoongArch32_Lite_FullSyS.dcp
+  read_ip -quiet d:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.srcs/sources_1/ip/clk_sync/clk_sync.xci
   read_xdc D:/Work/vivado_project/LoongArch32_Lite_FullSyS/LoongArch32_Lite_FullSyS.srcs/constrs_1/new/LoongArch32_Lite_FullSyS.xdc
   link_design -top LoongArch32_Lite_FullSyS -part xc7a35tftg256-1
   close_msg_db -file init_design.pb
@@ -170,6 +172,7 @@ start_step write_bitstream
 set ACTIVE_STEP write_bitstream
 set rc [catch {
   create_msg_db write_bitstream.pb
+  set_property XPM_LIBRARIES XPM_CDC [current_project]
   catch { write_mem_info -force LoongArch32_Lite_FullSyS.mmi }
   write_bitstream -force LoongArch32_Lite_FullSyS.bit -bin_file
   catch {write_debug_probes -quiet -force LoongArch32_Lite_FullSyS}
