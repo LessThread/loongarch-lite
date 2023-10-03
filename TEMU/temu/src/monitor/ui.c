@@ -129,17 +129,23 @@ static int cmd_si(char *args){
 	char* charArray = args;
     uint32_t result = 0;
 
-	// 处理字符串的转化
-    for (int i = 0; i < strlen(charArray); i++) {
-		if (!isDigit(charArray[i])) {
-            printf("Invalid character '%c' found. Conversion aborted.\n", charArray[i]);
-            return 0;
-        }
-        result = result * 10 + (charArray[i] - '0');
-    }
+	if(args == NULL){
+		result = 1;
+	}
+	else{
+		// 处理字符串的转化
+		for (int i = 0; i < strlen(charArray); i++) {
+			if (!isDigit(charArray[i])) {
+				printf("Invalid character '%c' found. Conversion aborted.\n", charArray[i]);
+				return 0;
+			}
+			result = result * 10 + (charArray[i] - '0');
+		}
+	}
+	
 
 	//执行指定步数
-	printf("step: %s\n",args);
+	printf("step: %d\n",result);
 	cpu_exec(result);
 	return 0;
 }

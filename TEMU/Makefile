@@ -39,7 +39,7 @@ $(BUILD_DIR)$(TEMU_TARGET):
 	@mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -o $@ $(SRCS) $(LDFLAGS)
 
-run: $(BUILD_DIR)$(TEMU_TARGET)
+run: clean-temu $(BUILD_DIR)$(TEMU_TARGET)
 	@./$(BUILD_DIR)$(TEMU_TARGET) $(USER_PROGRAM)
 
 clean-temu:
