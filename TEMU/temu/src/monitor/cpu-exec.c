@@ -25,6 +25,10 @@ void print_bin_instr(uint32_t pc) {
 }
 
 /* Simulate how the MiniMIPS32 CPU works. */
+/*
+	传入参数-1的意义是让cpu_exec函数连续执行指令，
+	直到模拟器的状态发生变化，而不需要明确指定要执行的指令数量
+*/
 void cpu_exec(volatile uint32_t n) {
 	
 	uint32_t pc;

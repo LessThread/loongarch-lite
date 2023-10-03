@@ -28,7 +28,7 @@ char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
-	//向CPU执行传入了-1的参数？
+	//向CPU执行传入了-1的参数
 	cpu_exec(-1);
 	return 0;
 }
@@ -39,7 +39,7 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
-static int cmd_si();
+static int cmd_si(char *args);
 static int cmd_info();
 static int cmd_p();
 static int cmd_x();
@@ -54,7 +54,7 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit TEMU", cmd_q },
-	{ "si [N]","Single step execution",cmd_si},
+	{ "si","Single step execution",cmd_si},
 	{"info [SUBCMD]","Print program status",cmd_info},
 	{"p [EXPR]","Expression",cmd_p},
 	{"x [N] [EXPR]","Scan Memory",cmd_x},
@@ -67,6 +67,7 @@ static struct {
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
 
+//处理help信息
 static int cmd_help(char *args) {
 	/* extract the first argument */
 	char *arg = strtok(NULL, " ");
@@ -119,8 +120,30 @@ void ui_mainloop() {
 	}
 }
 
+bool isDigit(char c) {
+    return (c >= '0' && c <= '9');
+}
 
-static int cmd_si(){return 0;}
+static int cmd_si(char *args){
+
+	char* charArray = args;
+    uint32_t result = 0;
+
+	// 处理字符串的转化
+    for (int i = 0; i < strlen(charArray); i++) {
+		if (!isDigit(charArray[i])) {
+            printf("Invalid character '%c' found. Conversion aborted.\n", charArray[i]);
+            return 0;
+        }
+        result = result * 10 + (charArray[i] - '0');
+    }
+
+	//执行指定步数
+	printf("step: %s\n",args);
+	cpu_exec(result);
+	return 0;
+}
+
 static int cmd_info(){return 0;}
 static int cmd_p(){return 0;}
 static int cmd_x(){return 0;}
