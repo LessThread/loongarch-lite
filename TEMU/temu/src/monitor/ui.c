@@ -28,6 +28,7 @@ char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
+	//向CPU执行传入了-1的参数？
 	cpu_exec(-1);
 	return 0;
 }
@@ -38,6 +39,13 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+static int cmd_si();
+static int cmd_info();
+static int cmd_p();
+static int cmd_x();
+static int cmd_w();
+static int cmd_d();
+
 static struct {
 	char *name;
 	char *description;
@@ -45,7 +53,13 @@ static struct {
 } cmd_table [] = {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
-	{ "q", "Exit TEMU", cmd_q }
+	{ "q", "Exit TEMU", cmd_q },
+	{ "si [N]","Single step execution",cmd_si},
+	{"info [SUBCMD]","Print program status",cmd_info},
+	{"p [EXPR]","Expression",cmd_p},
+	{"x [N] [EXPR]","Scan Memory",cmd_x},
+	{"w [EXPR]","Set up monitoring points",cmd_w},
+	{"d [N]","Delete Watchpoint",cmd_d}
 
 	/* TODO: Add more commands */
 
@@ -104,3 +118,11 @@ void ui_mainloop() {
 		if(i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
 	}
 }
+
+
+static int cmd_si(){return 0;}
+static int cmd_info(){return 0;}
+static int cmd_p(){return 0;}
+static int cmd_x(){return 0;}
+static int cmd_w(){return 0;}
+static int cmd_d(){return 0;}
