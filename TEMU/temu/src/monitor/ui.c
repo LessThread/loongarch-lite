@@ -41,10 +41,10 @@ static int cmd_help(char *args);
 
 static int cmd_si(char *args);
 static int cmd_info(char *args);
-static int cmd_p();
-static int cmd_x();
-static int cmd_w();
-static int cmd_d();
+static int cmd_p(char* args);
+static int cmd_x(char* args);
+static int cmd_w(char* args);
+static int cmd_d(char* args);
 
 static struct {
 	char *name;
@@ -124,22 +124,44 @@ bool isDigit(char c) {
     return (c >= '0' && c <= '9');
 }
 
-static int cmd_si(char *args){
+uint32_t getU32FromStr(char* charArray){
+	uint32_t result = 0;
+	bool FirstNonEmpty = 1; 
 
-	char* charArray = args;
-    uint32_t result = 0;
-
-	if(args == NULL){
-		result = 1;
-	}
-	else{
-		// 处理字符串的转化
-		for (int i = 0; i < strlen(charArray); i++) {
+	for (int i = 0; i < strlen(charArray); i++) {
+			if(charArray[i] == ' '){
+				if(FirstNonEmpty){
+					continue;
+				}
+				else{
+					printf("Invalid character found. Conversion aborted.\n");
+					return 0;
+				}
+				
+			}
+			else{
+				FirstNonEmpty = 0;
+			}
+			
 			if (!isDigit(charArray[i])) {
 				printf("Invalid character '%c' found. Conversion aborted.\n", charArray[i]);
 				return 0;
 			}
 			result = result * 10 + (charArray[i] - '0');
+		}
+	return result;
+}
+
+//单步执行
+static int cmd_si(char *args){
+    uint32_t result = 0;
+	if(args == NULL){
+		result = 1;
+	}
+	else{
+		result = getU32FromStr(args);
+		if(result == 0){
+			return 0;
 		}
 	}
 	
@@ -171,7 +193,58 @@ static int cmd_info(char* args){
 	}
 	return 0;
 }
-static int cmd_p(){return 0;}
-static int cmd_x(){return 0;}
-static int cmd_w(){return 0;}
-static int cmd_d(){return 0;}
+
+//扫描内存
+static int cmd_x(char* args){
+	//shell处理
+	for(;*args == ' ';args++){
+	}
+
+	char* args_n = args;
+	char* args_p = NULL;
+
+	for(;(*args_n)!=' ';args_n++){
+		if((*args_n) == '\0'){
+			printf("No parameter.\n");
+			return 0;
+		}
+	}
+
+	for(args_p = args_n;(*args_p) == ' ';args_p++){
+	}
+
+	*args_n = '\0';
+	args_n = args;
+
+
+	//参数传递
+	uint32_t N = getU32FromStr(args_n);
+	if(N == 0){
+		return 0;
+	}
+
+	//这个部分之后实现表达式求值,记得错误处理
+	uint32_t Addr = 0x0;
+
+	//输出内存数据结果
+	int times = N/4 + 1;
+	printf("N:%d,addr:0x%X\n",N,Addr);
+	
+	for(int i=0,offset=0;i<times;i++){
+		printf("0x%x:    0x%X\n",Addr+offset,mem_read(Addr+offset, 4));
+		offset+=4;
+	}
+
+
+
+
+	
+	
+	return 0;
+}
+
+
+
+static int cmd_p(char* args){return 0;}
+static int cmd_w(char* args){return 0;}
+static int cmd_d(char* args){return 0;}
