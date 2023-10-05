@@ -40,7 +40,7 @@ static int cmd_q(char *args) {
 static int cmd_help(char *args);
 
 static int cmd_si(char *args);
-static int cmd_info();
+static int cmd_info(char *args);
 static int cmd_p();
 static int cmd_x();
 static int cmd_w();
@@ -55,11 +55,11 @@ static struct {
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit TEMU", cmd_q },
 	{ "si","Single step execution",cmd_si},
-	{"info [SUBCMD]","Print program status",cmd_info},
-	{"p [EXPR]","Expression",cmd_p},
-	{"x [N] [EXPR]","Scan Memory",cmd_x},
-	{"w [EXPR]","Set up monitoring points",cmd_w},
-	{"d [N]","Delete Watchpoint",cmd_d}
+	{ "info","Print program status",cmd_info},
+	{ "p","Expression",cmd_p},
+	{ "x","Scan Memory",cmd_x},
+	{ "w","Set up monitoring points",cmd_w},
+	{ "d","Delete Watchpoint",cmd_d}
 
 	/* TODO: Add more commands */
 
@@ -150,7 +150,27 @@ static int cmd_si(char *args){
 	return 0;
 }
 
-static int cmd_info(){return 0;}
+//打印程序状态
+static int cmd_info(char* args){
+
+	//默认输出寄存器信息
+	if(args == NULL){
+		display_reg();
+		printf("No parameter.\n");
+		return 0;
+	}
+
+	if(strcmp(args,"r") == 0){
+		display_reg();
+	}
+	else if(strcmp(args,"w") == 0){
+		//在这里实现监视点
+	}
+	else{
+		printf("Illegal parameter %s.\n",args);
+	}
+	return 0;
+}
 static int cmd_p(){return 0;}
 static int cmd_x(){return 0;}
 static int cmd_w(){return 0;}
