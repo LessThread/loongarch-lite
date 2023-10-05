@@ -59,3 +59,26 @@ void free_wp(WP *wp){
 		
 	}
 }
+
+
+void delete_wp(int id){
+	for(WP* seacher = head;seacher!=NULL;seacher=seacher->next){
+		if(seacher->NO == id){
+			free_wp(seacher);
+			return;
+		}
+	}
+	printf("Not a valid serial number.\n");
+}
+
+void display_watcher(){
+	printf("using watcher:\n");
+	for(WP* seacher = head;seacher!=NULL;seacher=seacher->next){
+		printf("	No.%d\n",seacher->NO);
+	}
+
+	printf("free watcher:\n");
+	for(WP* seacher = free_;seacher!=NULL;seacher=seacher->next){
+		printf("	No.%d\n",seacher->NO);
+	}
+}

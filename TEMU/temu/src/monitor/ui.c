@@ -8,6 +8,8 @@
 void cpu_exec(uint32_t);
 
 void display_reg();
+void display_watcher();
+void delete_wp(int id);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -124,6 +126,7 @@ bool isDigit(char c) {
     return (c >= '0' && c <= '9');
 }
 
+//字符串转化
 uint32_t getU32FromStr(char* charArray){
 	uint32_t result = 0;
 	bool FirstNonEmpty = 1; 
@@ -186,7 +189,7 @@ static int cmd_info(char* args){
 		display_reg();
 	}
 	else if(strcmp(args,"w") == 0){
-		//在这里实现监视点
+		display_watcher();
 	}
 	else{
 		printf("Illegal parameter %s.\n",args);
@@ -247,4 +250,32 @@ static int cmd_x(char* args){
 
 static int cmd_p(char* args){return 0;}
 static int cmd_w(char* args){return 0;}
-static int cmd_d(char* args){return 0;}
+static int cmd_d(char* args){
+	uint32_t result = 0;
+	bool FirstNonEmpty = 1; 
+	char* charArray = args;
+	for (int i = 0; i < strlen(charArray); i++) {
+			if(charArray[i] == ' '){
+				if(FirstNonEmpty){
+					continue;
+				}
+				else{
+					printf("Invalid character found. Conversion aborted.\n");
+					return 0;
+				}
+				
+			}
+			else{
+				FirstNonEmpty = 0;
+			}
+			
+			if (!isDigit(charArray[i])) {
+				printf("Invalid character '%c' found. Conversion aborted.\n", charArray[i]);
+				return 0;
+			}
+			result = result * 10 + (charArray[i] - '0');
+		}
+
+	delete_wp(result);
+	return 0;
+}
