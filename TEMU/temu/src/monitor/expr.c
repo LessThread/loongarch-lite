@@ -6,10 +6,15 @@
 #include <sys/types.h>
 #include <regex.h>
 
-enum {
-	NOTYPE = 256, EQ
 
-	/* TODO: Add more token types */
+/* TODO: Add more token types */
+enum {
+	NOTYPE = 256, 
+
+	EQ,
+
+	HEX,
+	NUMBER,
 
 };
 
@@ -22,9 +27,17 @@ static struct rule {
 	 * Pay attention to the precedence level of different rules.
 	 */
 
-	{" +",	NOTYPE},				// spaces
-	{"\\+", '+'},					// plus
-	{"==", EQ}						// equal
+	{"0x[0-9A-Fa-f]+",HEX},//16进制数
+	{"[0-9]+", NUMBER}, // 数字
+
+	{" +",	NOTYPE},// 匹配空格
+
+	{"\\+", '+'},// 加法
+	{"-", '-'}, // 减法
+	{"\\*", '*'}, // 乘法
+  	{"/", '/'}, // 除法
+
+	{"==", EQ}// equal
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -79,7 +92,8 @@ static bool make_token(char *e) {
 				 */
 
 				switch(rules[i].token_type) {
-					default: panic("please implement me");
+					//暂时关闭处理程序
+					default: break;panic("please implement me");
 				}
 
 				break;
@@ -106,3 +120,6 @@ uint32_t expr(char *e, bool *success) {
 	return 0;
 }
 
+bool callRegExp(char* str){
+	return make_token(str);
+}

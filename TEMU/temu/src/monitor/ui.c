@@ -10,6 +10,7 @@ void cpu_exec(uint32_t);
 void display_reg();
 void display_watcher();
 void delete_wp(int id);
+bool callRegExp(char* str);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -247,9 +248,17 @@ static int cmd_x(char* args){
 }
 
 
+//正则表达式识别
+static int cmd_p(char* args){
+	callRegExp(args);
+	return 0;
+}
 
-static int cmd_p(char* args){return 0;}
+
+
 static int cmd_w(char* args){return 0;}
+
+
 static int cmd_d(char* args){
 	uint32_t result = 0;
 	bool FirstNonEmpty = 1; 
