@@ -250,6 +250,9 @@ static int cmd_x(char* args){
 
 //正则表达式识别
 static int cmd_p(char* args){
+	if(args == NULL){
+		return 0;
+	}
 	callRegExp(args);
 	return 0;
 }

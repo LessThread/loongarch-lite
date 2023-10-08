@@ -31,6 +31,8 @@ static struct rule {
 	{"[0-9]+", NUMBER}, // 数字
 
 	{" +",	NOTYPE},// 匹配空格
+	{"\\(", '('}, // 左括号 
+  	{"\\)", ')'}, // 右括号
 
 	{"\\+", '+'},// 加法
 	{"-", '-'}, // 减法
@@ -66,7 +68,12 @@ typedef struct token {
 	char str[32];
 } Token;
 
-Token tokens[32];
+
+// 预留词法分析的token缓冲区（这是tm的编译原理吗）
+#define TOKENS_SIZE 32
+Token tokens[TOKENS_SIZE];
+
+// token序列号
 int nr_token;
 
 static bool make_token(char *e) {
@@ -91,10 +98,28 @@ static bool make_token(char *e) {
 				 * of tokens, some extra actions should be performed.
 				 */
 
-				switch(rules[i].token_type) {
-					//暂时关闭处理程序
-					default: break;panic("please implement me");
+				switch(rules[i].token_type) 
+				{
+					case NUMBER:
+						{strncpy(tokens[nr_token].str,substr_start,substr_len);break;}
+					case HEX:
+						{break;}
+					case '+':break;
+					case '-':break;
+					case '*':break;
+					case '/':break;
+					case '(':break;
+					case ')':break;
+					case NOTYPE:break;
+
+					default:panic("please implement me");
 				}
+
+				//记录token类型
+				tokens[nr_token].type=rules[i].token_type; 
+
+				//tokens缓冲区增加
+				nr_token++;
 
 				break;
 			}
@@ -104,6 +129,12 @@ static bool make_token(char *e) {
 			printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
 			return false;
 		}
+	}
+
+	//词法分析器调试部分
+	printf("total tokens number: %d\n",nr_token);
+	for(int i=0;i<nr_token;i++){
+		printf("token%d: %d, %s\n",i,tokens[i].type,tokens[i].str);
 	}
 
 	return true; 
