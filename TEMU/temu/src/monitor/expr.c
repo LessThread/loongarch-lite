@@ -10,14 +10,17 @@
 
 // 规则编号
 /* TODO: Add more token types */
+
+# define TOKEN_LEVEL_1 128
+# define TOKEN_LEVEL_2 256
+# define TOKEN_LEVEL_3 512
 enum {
-	NOTYPE = 256, 
+	EQ = TOKEN_LEVEL_1,
 
-	EQ,
-
-	HEX,
+	HEX = TOKEN_LEVEL_2,
 	NUMBER,
 
+	NOTYPE = TOKEN_LEVEL_3, 
 };
 
 
@@ -38,10 +41,11 @@ static struct rule {
 	{"\\(", '('}, // 左括号 
   	{"\\)", ')'}, // 右括号
 
-	{"\\+", '+'},// 加法
-	{"-", '-'}, // 减法
 	{"\\*", '*'}, // 乘法
   	{"/", '/'}, // 除法
+
+	{"\\+", '+'},// 加法
+	{"-", '-'}, // 减法
 
 	{"==", EQ}// equal
 };
@@ -67,15 +71,20 @@ void init_regex() {
 	}
 }
 
+
+# define TOKEN_STR_SIZE 32
 typedef struct token {
 	int type;
-	char str[32];
+	char str[TOKEN_STR_SIZE];
 } Token;
 
 
 // 预留词法分析的token缓冲区（这是tm的编译原理吗）
 #define TOKENS_SIZE 32
+#define UNCATCH_TOKEN -404
+
 Token tokens[TOKENS_SIZE];
+
 
 // token序列号
 int nr_token;
@@ -153,7 +162,53 @@ static bool make_token(char *e) {
 }
 
 
-//外部调用函数，这里再做一层封装
+// 找到dominant operator的封装函数
+static Token* searchDomOp(Token* ts,unsigned token_num){
+	Token* scan_ptr = ts;
+	Token* dom_op = NULL;
+
+	int bracket = 0;
+	for(int i=0;i<token_num;scan_ptr++,i++){
+
+		if(bracket == 1){
+			if(scan_ptr->type == ')'){
+				bracket = 0;
+				continue;
+			}
+			else{
+				continue;
+			}
+		}
+		if(scan_ptr->type == '('){
+			bracket = 1;
+			continue;
+		}
+
+		if(scan_ptr->type < TOKEN_LEVEL_1){
+			if(dom_op == NULL){
+				dom_op = scan_ptr;
+			}
+
+			if((scan_ptr->type = '+')||(scan_ptr->type = '-')){
+				dom_op = scan_ptr;
+			}
+			else{
+				if((scan_ptr->type = '*')||(scan_ptr->type = '/')){
+					dom_op = scan_ptr;
+				}
+			}
+		}
+		
+	}
+
+	//检查括号匹配的完整性
+	if(bracket == 1){
+		assert(-1);
+	}
+	return dom_op;
+}
+
+//外部调用函数，这里再做一层封装，作为递归表达式的求值处理
 uint32_t expr(char *e, bool *success) {
 	if(!make_token(e)) {
 		*success = false;
@@ -163,15 +218,28 @@ uint32_t expr(char *e, bool *success) {
 	/* TODO: Insert codes to evaluate the expression. */
 	//panic("please implement me");
 
-	// 这里已经完成了对token的解析，接下来是运算部分
-	
+	// 这里已经完成了对token的解析，接下来是运算部分，以下代码按照指导书的介绍设计
+	//tips: 可能需要实现区分负数的功能
 
+	//扫描 dominant operator
+	Token* DomOpToken = searchDomOp(tokens,nr_token);
+
+	printf("%c\n",DomOpToken->type);
 	return 0;
 }
+
 
 // 最终对外实现函数，返回值的提示之类的还没做，先实现核心功能
 bool callRegExp(char* str){
 	bool suc = 0;
 	bool* psuc = &suc;
+
+	for(int i=0;i<TOKENS_SIZE;i++){
+		(tokens[i]).type = UNCATCH_TOKEN;
+		for(int j=0; j<TOKEN_STR_SIZE; j++){
+			(tokens[i]).str[i] = '\0';
+		}
+	}
+
 	return expr(str,psuc);
 }
