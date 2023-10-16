@@ -27,3 +27,32 @@ make_helper(or) {
 	sprintf(assembly, "or\t%s,\t%s,\t%s", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
 }
 
+make_helper(add_w) {
+
+	decode_3r_type(instr);
+	// 是否需要考虑溢出问题而进行位置的框选
+	reg_w(op_dest->reg) = (op_src1->val + op_src2->val);
+	sprintf(assembly, "add.w\t%s,\t%s,\t%s", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+}
+
+make_helper(xor) {
+
+    decode_3r_type(instr);
+	reg_w(op_dest->reg) = (op_src1->val ^ op_src2->val);
+	sprintf(assembly, "xor\t%s,\t%s,\t%s", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+}
+make_helper(srl_w) {
+
+	decode_3r_type(instr);
+    uint32_t temp;
+	temp = (op_src2->val & 0x0000001f); 
+	reg_w(op_dest->reg) = (uint32_t)(op_src1->val>>temp); 
+	sprintf(assembly, "srl.w\t%s,\t%s,\t%s", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+}
+make_helper(sltu) {
+
+    decode_3r_type(instr);
+	reg_w(op_dest->reg) = (uint32_t)op_src1->val < (uint32_t)op_src2->val ? 1 : 0;
+	sprintf(assembly, "sltu\t%s,\t%s,\t%s", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+
+}

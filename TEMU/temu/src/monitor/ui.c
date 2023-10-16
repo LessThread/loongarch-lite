@@ -201,12 +201,14 @@ static int cmd_info(char* args){
 //扫描内存
 static int cmd_x(char* args){
 	//shell处理
+	//后移指针，使当前args指针指向参数N
 	for(;*args == ' ';args++){
 	}
 
 	char* args_n = args;
 	char* args_p = NULL;
-
+    
+	//获取计算表达式起始位置
 	for(;(*args_n)!=' ';args_n++){
 		if((*args_n) == '\0'){
 			printf("No parameter.\n");
@@ -214,6 +216,7 @@ static int cmd_x(char* args){
 		}
 	}
 
+    //获取计算表达式结束位置
 	for(args_p = args_n;(*args_p) == ' ';args_p++){
 	}
 
