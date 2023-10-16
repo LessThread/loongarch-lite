@@ -18,6 +18,10 @@ enum {
 	//运算符小于lv1
 
 	EQ = TOKEN_LEVEL_1+1,
+	NOT_EQ,
+	AND,
+	OR,
+	NOT,
 
 	HEX = TOKEN_LEVEL_2+1,
 	NUMBER,
@@ -45,7 +49,11 @@ static struct rule {
 	{"\\+", '+'},// 加法
 	{"-", '-'}, // 减法
 
-	{"==", EQ}// equal
+	{"==", EQ},// equal
+	{"!=",NOT_EQ},
+	{"&&",AND},
+	{"||",OR},
+	{"!",NOT}
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -131,6 +139,11 @@ static bool make_token(char *e) {
 					case '/':break;
 					case '(':break;
 					case ')':break;
+					case EQ:break;
+					case NOT_EQ:break;
+					case AND:break;
+					case OR:break;
+					case NOT:break;
 					case NOTYPE:break;
 
 					default:panic("please implement me");
@@ -230,6 +243,24 @@ static int searchDomOp(Token* ts,unsigned token_num){
 			}
 		}
 
+		if((scan_ptr->type < TOKEN_LEVEL_2)&&(scan_ptr->type > TOKEN_LEVEL_1))
+		{
+			dom_op = scan_ptr;
+			index = i;
+
+			if((scan_ptr->type == AND)||(scan_ptr->type == OR)){
+				dom_op = scan_ptr;
+				index = i;
+			}
+			else{
+				if((scan_ptr->type == NOT_EQ)||(scan_ptr->type == EQ)){
+					dom_op = scan_ptr;
+					index = i;
+				}
+			}
+			
+		}
+
 		
 	}
 
@@ -262,6 +293,64 @@ static int searchDomOp(Token* ts,unsigned token_num){
 
 
 // 字符串转数字
+int HEXToInt(char* str){
+	int result = 0;
+    int sign = 1;
+    int i = 0;
+
+    while (str[i] != '\0') 
+	{
+		int digit = str[i] - '0';
+		switch (str[i])
+		{
+		case 'a':
+			digit = 10;
+			break;
+		case 'b':
+			digit = 11;
+			break;
+		case 'c':
+			digit = 12;
+			break;
+		case 'd':
+			digit = 13;
+			break;
+		case 'e':
+			digit = 14;
+			break;
+		case 'f':
+			digit = 15;
+			break;
+		case 'A':
+			digit = 10;
+			break;
+		case 'B':
+			digit = 11;
+			break;
+		case 'C':
+			digit = 12;
+			break;
+		case 'D':
+			digit = 13;
+			break;
+		case 'E':
+			digit = 14;
+			break;
+		case 'F':
+			digit = 15;
+			break;
+		
+		default:
+			digit = str[i] - '0';
+			break;
+		}
+        result = result * 16 + digit;
+        i++;
+    }
+
+    return sign * result;
+}
+
 int stringToInt(char* str) {
     int result = 0;
     int sign = 1;
@@ -274,6 +363,10 @@ int stringToInt(char* str) {
 	}
 
     while (str[i] != '\0') {
+		if(str[i] == 'x'){
+			//识别到HEX
+			return sign * HEXToInt(&str[i+1]);
+		}
         int digit = str[i] - '0';
         result = result * 10 + digit;
         i++;
@@ -315,6 +408,7 @@ int getRecursiveResult(Token* ts,unsigned token_num){
 	int res = -443;
 	int res1 = -444;
 	int res2 = -445;
+	char icon[10] = "UNKNOW";
 
 	res1 = getRecursiveResult(part1,index);
 	res2 = getRecursiveResult(part2,token_num-index-1);
@@ -323,26 +417,52 @@ int getRecursiveResult(Token* ts,unsigned token_num){
 	{
 	case '+':
 		res = res1+res2;
+		strcpy(icon,"+");
 		break;
 
 	case '-':
 		res = res1-res2;
+		strcpy(icon,"-");
 		break;
 
 	case '*':
 		res = res1*res2;
+		strcpy(icon,"*");
 		break;
 
 	case '/':
 		res = res1/res2;
-		break;	
+		strcpy(icon,"/");
+		break;
+	
+	case AND:
+		res = res1&&res2;
+		strcpy(icon,"&&");	
+		break;
+
+	case OR:
+		res = res1&&res2;
+		strcpy(icon,"||");
+		break;
+
+	case EQ:
+		res = res1==res2;
+		strcpy(icon,"==");
+		break;
+
+	case NOT_EQ:
+		res = res1!=res2;
+		strcpy(icon,"!=");
+		break;
+
 
 	default:
-		panic("err in switch.\n");
+		panic("err in switch. \n");
 		break;
 	}
 
-	printf("%d %c %d = %d\n",res1,ts[index].type,res2,res);
+	if(ts[index].type<TOKEN_LEVEL_1)
+		printf("%d %s %d = %d\n",res1,icon,res2,res);
 	return res;
 }
 
