@@ -231,7 +231,7 @@ static int cmd_x(char* args){
 	}
 
 	//这个部分之后实现表达式求值,记得错误处理
-	uint32_t Addr = 0x0;
+	uint32_t Addr = callRegExp(args_p);
 
 	//输出内存数据结果
 	int times = N/4 + 1;

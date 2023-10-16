@@ -1,6 +1,7 @@
 #include "helper.h"
 #include "monitor.h"
 #include "reg.h"
+#include <stdlib.h>
 
 extern uint32_t instr;
 extern char assembly[80];
@@ -38,7 +39,7 @@ make_helper(beq) {
         cpu.pc = cpu.pc + temp;
     }
 	
-	sprintf(assembly, "beq\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->val));
+	sprintf(assembly, "beq\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
 }
 
 make_helper(bne) {
@@ -55,7 +56,7 @@ make_helper(bne) {
         cpu.pc = cpu.pc + temp;
     }
 	
-	sprintf(assembly, "bne\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->val));
+	sprintf(assembly, "bne\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
 }
 
 make_helper(bge) {
@@ -72,6 +73,6 @@ make_helper(bge) {
         cpu.pc = cpu.pc + temp;
     }
 	
-	sprintf(assembly, "bge\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->val));
+	sprintf(assembly, "bge\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
  
 }

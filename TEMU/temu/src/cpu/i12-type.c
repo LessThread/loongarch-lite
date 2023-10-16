@@ -2,6 +2,7 @@
 #include "memory.h"
 #include "monitor.h"
 #include "reg.h"
+#include <stdlib.h>
 
 
 extern uint32_t instr;
@@ -40,14 +41,14 @@ make_helper(addi_w) {
 	   temp = op_src2->val | 0x00000000;
 	
 	reg_w(op_dest->reg) = (op_src1->val + temp);
-	sprintf(assembly, "addi.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+	sprintf(assembly, "addi.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
 }
 
 make_helper(andi) {
 	decode_ui12_type(instr);
 	// 是否需要考虑溢出问题而进行位置的框选
 	reg_w(op_dest->reg) = (op_src1->val & op_src2->val);
-	sprintf(assembly, "andi\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+	sprintf(assembly, "andi\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
 }
 
 make_helper(ld_w) {
@@ -64,8 +65,8 @@ make_helper(ld_w) {
 	Assert(vaddr < HW_MEM_SIZE, "physical address %x is outside of the physical memory", vaddr);
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
-	reg_w(op_dest->reg) = mem_red(vaddr,4);
-	sprintf(assembly, "ld.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+	reg_w(op_dest->reg) = mem_read(vaddr,4);
+	sprintf(assembly, "ld.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
 }
 
 make_helper(ld_b) {
@@ -82,8 +83,8 @@ make_helper(ld_b) {
 	Assert(vaddr < HW_MEM_SIZE, "physical address %x is outside of the physical memory", vaddr);
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
-	reg_w(op_dest->reg) = mem_red(vaddr,1);
-	sprintf(assembly, "ld.b\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+	reg_w(op_dest->reg) = mem_read(vaddr,1);
+	sprintf(assembly, "ld.b\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
 }
 
 make_helper(st_w) {
@@ -101,7 +102,7 @@ make_helper(st_w) {
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
 	mem_write(vaddr, 4, reg_w(op_dest->reg));
-	sprintf(assembly, "st.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+	sprintf(assembly, "st.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
 }
 
 make_helper(st_b) {
@@ -119,5 +120,5 @@ make_helper(st_b) {
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
 	mem_write(vaddr, 1, reg_w(op_dest->reg));
-	sprintf(assembly, "st.b\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+	sprintf(assembly, "st.b\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
 }
