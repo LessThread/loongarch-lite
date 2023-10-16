@@ -15,12 +15,14 @@
 # define TOKEN_LEVEL_2 256
 # define TOKEN_LEVEL_3 512
 enum {
-	EQ = TOKEN_LEVEL_1,
+	//运算符小于lv1
 
-	HEX = TOKEN_LEVEL_2,
+	EQ = TOKEN_LEVEL_1+1,
+
+	HEX = TOKEN_LEVEL_2+1,
 	NUMBER,
 
-	NOTYPE = TOKEN_LEVEL_3, 
+	NOTYPE = TOKEN_LEVEL_3+1, 
 };
 
 
@@ -29,10 +31,6 @@ static struct rule {
 	char *regex;
 	int token_type;
 } rules[] = {
-
-	/* TODO: Add more rules.
-	 * Pay attention to the precedence level of different rules.
-	 */
 
 	{"0x[0-9A-Fa-f]+",HEX},//16进制数
 	{"[0-9]+", NUMBER}, // 数字
@@ -54,9 +52,6 @@ static struct rule {
 
 static regex_t re[NR_REGEX];
 
-/* Rules are used for many times.
- * Therefore we compile them only once before any usage.
- */
 void init_regex() {
 	int i;
 	char error_msg[128];
@@ -84,6 +79,13 @@ typedef struct token {
 #define UNCATCH_TOKEN -404
 
 Token tokens[TOKENS_SIZE];
+
+
+typedef struct comput_unit{
+	Token comput_token[TOKENS_SIZE];
+}comput_unit;
+comput_unit unit[TOKENS_SIZE];
+int unit_size = 0;
 
 
 // token序列号
@@ -151,13 +153,6 @@ static bool make_token(char *e) {
 	}
 
 	//词法分析器调试部分
-	printf("total tokens number: %d\n",nr_token);
-	for(int i=0;i<nr_token;i++){
-		if(tokens[i].type<TOKEN_LEVEL_2){
-			printf("token%d: %c, %s\n",i,tokens[i].type,tokens[i].str);
-		}
-		else printf("token%d: %d, %s\n",i,tokens[i].type,tokens[i].str);
-	}
 
 
 	//return的时候注意token计数器是否需要归零？
@@ -167,39 +162,56 @@ static bool make_token(char *e) {
 
 // 找到dominant operator的封装函数
 static int searchDomOp(Token* ts,unsigned token_num){
+
+	if(ts == NULL){
+		Assert(0,"错误:空指针错误exp-01\n");
+	}
+
 	Token* scan_ptr = ts;
 	Token* dom_op = NULL;
 
 	int bracket = 0;
 	int index = -1;
-	for(int i=0; i<token_num; scan_ptr++,i++){
 
-		// 匹配括号
-		if(bracket == 1){
-			if(scan_ptr->type == ')'){
-				bracket = 0;
-				continue;
-			}
-			else{
-				continue;
-			}
-		}
+
+
+	for(int i=0; i<token_num; scan_ptr++,i++)
+	{
+
+		// 匹配括号(bug fix:只有括号的情况，bug,多重括号会有问题)
 		if(scan_ptr->type == '('){
-			bracket = 1;
+			bracket += 1;
 			continue;
 		}
 
+		if(bracket == 1)
+		{
+			if(scan_ptr->type == ')')
+			{
+				bracket -=1 ;
+			}
+			continue;
+
+		}
+
+		
+
 		// 扫描运算符
-		if(scan_ptr->type < TOKEN_LEVEL_1){
+		
+		if(scan_ptr->type < TOKEN_LEVEL_1)
+		{
+
 			if(dom_op == NULL){
 				dom_op = scan_ptr;
 				index = i;
 			}
 
-			if((scan_ptr->type = '+')||(scan_ptr->type == '-')){
+			if((scan_ptr->type == '+')||(scan_ptr->type == '-')){
 				//这里处理负数的情况
-				if((dom_op->type == '+')&&(scan_ptr->type == '-')){
+				if((dom_op->type == '+')&&(scan_ptr->type == '-'))
+				{
 					if( i == index+1 ){
+						printf("警告:负数请加括号\n");
 						continue;
 					}
 				}
@@ -207,46 +219,44 @@ static int searchDomOp(Token* ts,unsigned token_num){
 
 				dom_op = scan_ptr;
 				index = i;
-
-				printf("in-for-token:%c\n",ts[index].type);
 			}
-			else{
-				if((scan_ptr->type = '*')||(scan_ptr->type = '/')){
-					dom_op = scan_ptr;
-					index = i;
+
+			if((scan_ptr->type == '*')||(scan_ptr->type == '/')){
+				if((dom_op->type == '+')||(scan_ptr->type == '-')){
+					continue;
 				}
+				dom_op = scan_ptr;
+				index = i;
 			}
 		}
 
 		
-		
+	}
+
+	//检查括号匹配的完整性
+	if(bracket != 0){
+		Assert(0,"括号匹配不完整\n");
 	}
 
 	//检查有无运算符
 	if(index == -1){
+		//情况1：无运算符,括号包含了整个算式（3+4）
+		if(ts[0].type == '(')
+		{
+			return -2;
+		}
+		//情况2：无运算符,纯非负数字 1
 		return -1;
 	}
 
-	//检查是不是负数
+	//检查是不是纯负数
 	if(index == 0){
+		//纯负数 -1
 		if(dom_op->type == '-'){
-			return 0;
-		}
-		//检查是不是括号边缘
-		else if(dom_op->type == '('){
-			return -2;
-		}
-		else if(dom_op->type == ')'){
-			return -2;
+			return -1;
 		}
 	}
 
-		//检查括号匹配的完整性
-	if(bracket == 1){
-		assert(99);
-	}
-
-	printf("in-search-token:%c\n",ts[index].type);
 	return index;
 }
 
@@ -256,11 +266,12 @@ int stringToInt(char* str) {
     int result = 0;
     int sign = 1;
     int i = 0;
-
-    if (str[0] == '-') {
-        sign = -1;
-        i = 1;
-    }
+	//识别负数
+	if (str[0] == '-') 
+	{
+		sign = -1;
+		i = 1;
+	}
 
     while (str[i] != '\0') {
         int digit = str[i] - '0';
@@ -268,7 +279,7 @@ int stringToInt(char* str) {
         i++;
     }
 
-	//printf("stringToInt:%d\n",sign * result);
+	//printf("%s :stringToInt: %d\n",str, sign * result);
     return sign * result;
 }
 
@@ -276,84 +287,54 @@ int stringToInt(char* str) {
 //封装一个递归实现计算的函数
 int getRecursiveResult(Token* ts,unsigned token_num){
 
-	Token* p = ts;
-	for(int i=0;i<token_num;i++,p++){
-		if(p->type<TOKEN_LEVEL_2)
-			printf("token:%c\n",p->type);
-		else
-			printf("token:%d\n",p->type);
-	}
-	printf("******");
-
 	int index = searchDomOp(ts,token_num);
 
-	p = ts;
-	for(int i=0;i<token_num;i++,p++){
-		if(p->type<TOKEN_LEVEL_2)
-			printf("token:%c\n",p->type);
-		else
-			printf("token:%d\n",p->type);
+	if(index == 0)//错误
+	{
+		Assert(0,"index 是 0\n");
 	}
-	printf("******");
-
-	if(index != -1)
-		printf("dom index:%d, type: %c\n",index,ts[index].type);
-
-
-	if(index == 0){
-		printf("0src: %s\n",ts->str);
+	if(index == -1)//转数字
+	{
 		return stringToInt(ts->str);
 	}
-	if(index == -1){
-		printf("-1src: %s\n",ts->str);
-		return stringToInt(ts->str);
-	}
-	if(index == -2){
-		printf("-2src: %s\n",ts->str);
-		return stringToInt((ts++)->str);
+	if(index == -2)//去括号
+	{
+		ts++;
+		return getRecursiveResult(ts,token_num-2);
 	}
 
 	Token* part1 = ts;
 	Token* part2 = ts;
-	for(int i=0;i<=index;i++){
+
+
+	for(int i=0;i<index+1;i++){
 		part2++;
 	}
 
 	//递归开始部分
-	//int res = -403;
-
 	int res = -443;
 	int res1 = -444;
 	int res2 = -445;
 
-	
+	res1 = getRecursiveResult(part1,index);
+	res2 = getRecursiveResult(part2,token_num-index-1);
 
 	switch ((ts[index].type))
 	{
 	case '+':
-		res1 = getRecursiveResult(part1,index);
-		res2 = getRecursiveResult(part2,token_num-index-1);
-		printf("+ res1:%d,res2:%d\n",res1,res2);
 		res = res1+res2;
 		break;
+
 	case '-':
-		res1 = getRecursiveResult(part1,index);
-		res2 = getRecursiveResult(part2,token_num-index-1);
-		printf("- res1:%d,res2:%d\n",res1,res2);
 		res = res1-res2;
 		break;
+
 	case '*':
-		res1 = getRecursiveResult(part1,index);
-		res2 = getRecursiveResult(part2,token_num-index-1);
-		printf("* res1:%d,res2:%d\n",res1,res2);
 		res = res1*res2;
 		break;
+
 	case '/':
-		res1 = getRecursiveResult(part1,index);
-		res2 = getRecursiveResult(part2,token_num-index-1);
-		printf("/ res1:%d,res2:%d\n",res1,res2);
 		res = res1/res2;
-		//res = getRecursiveResult(part1,index) / getRecursiveResult(part2,token_num-index-1);
 		break;	
 
 	default:
@@ -361,36 +342,34 @@ int getRecursiveResult(Token* ts,unsigned token_num){
 		break;
 	}
 
+	printf("%d %c %d = %d\n",res1,ts[index].type,res2,res);
 	return res;
 }
 
 
 //外部调用函数，这里再做一层封装，作为递归表达式的求值处理
-uint32_t expr(char *e, bool *success) {
+int expr(char *e, bool *success) 
+{
+	//解析所有token
 	if(!make_token(e)) {
 		*success = false;
 		return 0;
 	}
 
 	printf("--------\n");
-	/* TODO: Insert codes to evaluate the expression. */
-	//panic("please implement me");
-
-	// 这里已经完成了对token的解析，接下来是运算部分，以下代码按照指导书的介绍设计
-	//tips: 可能需要实现区分负数的功能
-
 	int result = getRecursiveResult(tokens,nr_token);
-
 	printf("result:%d\n",result);
+
 	return 0;
 }
 
 
 // 最终对外实现函数，返回值的提示之类的还没做，先实现核心功能
-bool callRegExp(char* str){
+int callRegExp(char* str){
 	bool suc = 0;
 	bool* psuc = &suc;
 
+	//初始化
 	for(int i=0;i<TOKENS_SIZE;i++){
 		(tokens[i]).type = UNCATCH_TOKEN;
 		for(int j=0; j<TOKEN_STR_SIZE; j++){
