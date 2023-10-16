@@ -295,7 +295,6 @@ static int searchDomOp(Token* ts,unsigned token_num){
 // 字符串转数字
 int HEXToInt(char* str){
 	int result = 0;
-    int sign = 1;
     int i = 0;
 
     while (str[i] != '\0') 
@@ -348,7 +347,7 @@ int HEXToInt(char* str){
         i++;
     }
 
-    return sign * result;
+    return result;
 }
 
 int stringToInt(char* str) {
@@ -365,14 +364,15 @@ int stringToInt(char* str) {
     while (str[i] != '\0') {
 		if(str[i] == 'x'){
 			//识别到HEX
-			return sign * HEXToInt(&str[i+1]);
+			result =  sign * HEXToInt(&str[i+1]);
+			break;
 		}
         int digit = str[i] - '0';
         result = result * 10 + digit;
         i++;
     }
 
-	//printf("%s :stringToInt: %d\n",str, sign * result);
+	printf("%s :stringToInt: %d\n",str, sign * result);
     return sign * result;
 }
 
@@ -387,7 +387,8 @@ int getRecursiveResult(Token* ts,unsigned token_num){
 		Assert(0,"index 是 0\n");
 	}
 	if(index == -1)//转数字
-	{
+	{	
+		printf("index:%s\n",ts->str);
 		return stringToInt(ts->str);
 	}
 	if(index == -2)//去括号
@@ -461,8 +462,8 @@ int getRecursiveResult(Token* ts,unsigned token_num){
 		break;
 	}
 
-	if(ts[index].type<TOKEN_LEVEL_1)
-		printf("%d %s %d = %d\n",res1,icon,res2,res);
+
+	printf("%d %s %d = %d\n",res1,icon,res2,res);
 	return res;
 }
 
@@ -480,7 +481,7 @@ int expr(char *e, bool *success)
 	int result = getRecursiveResult(tokens,nr_token);
 	printf("result:%d\n",result);
 
-	return 0;
+	return result;
 }
 
 
@@ -491,9 +492,11 @@ int callRegExp(char* str){
 
 	//初始化
 	for(int i=0;i<TOKENS_SIZE;i++){
+
 		(tokens[i]).type = UNCATCH_TOKEN;
+		
 		for(int j=0; j<TOKEN_STR_SIZE; j++){
-			(tokens[i]).str[i] = '\0';
+			(tokens[i]).str[j] = '\0';
 		}
 	}
 
