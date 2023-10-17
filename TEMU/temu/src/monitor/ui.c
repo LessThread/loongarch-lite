@@ -1,16 +1,20 @@
 #include "monitor.h"
 #include "temu.h"
+#include "watchpoint.h"
 
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
-void cpu_exec(uint32_t);
 
+
+void cpu_exec(uint32_t);
 void display_reg();
 void display_watcher();
 void delete_wp(int id);
 bool callRegExp(char* str);
+WP* new_wp();
+
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -253,6 +257,10 @@ static int cmd_p(char* args){
 
 // 设置监视点
 static int cmd_w(char* args){
+	WP* wp = new_wp();
+	wp->expr = args;
+	wp->result = callRegExp(wp->expr);
+	printf("expr:%s\n",wp->expr);
 	return 0;
 }
 

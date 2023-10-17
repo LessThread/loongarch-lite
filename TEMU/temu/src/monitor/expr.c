@@ -1,5 +1,5 @@
 #include "temu.h"
-
+#include <stdlib.h>
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
@@ -14,6 +14,7 @@
 # define TOKEN_LEVEL_1 128
 # define TOKEN_LEVEL_2 256
 # define TOKEN_LEVEL_3 512
+# define TOKEN_LEVEL_4 1024
 enum {
 	//运算符小于lv1
 
@@ -26,7 +27,8 @@ enum {
 	HEX = TOKEN_LEVEL_2+1,
 	NUMBER,
 
-	NOTYPE = TOKEN_LEVEL_3+1, 
+	NOTYPE = TOKEN_LEVEL_3+1,
+	REG = TOKEN_LEVEL_4 + 1,
 };
 
 
@@ -35,6 +37,17 @@ static struct rule {
 	char *regex;
 	int token_type;
 } rules[] = {
+	{"\\$pc",REG},
+	{"\\$zero", REG},            // $zero
+    {"ra", REG},                 // ra
+    {"\\$tp", REG},              // $tp
+    {"\\$sp", REG},              // $sp
+    {"a[0-9]", REG},             // a0-a9
+    {"\\$a[1-7]", REG},          // $a1-$a7
+    {"\\$t[0-8]", REG},          // $t0-$t8
+    {"\\$x", REG},               // $x
+    {"\\$fp", REG},              // $fp
+    {"\\$s[0-8]", REG},           // $s0-$s8
 
 	{"0x[0-9A-Fa-f]+",HEX},//16进制数
 	{"[0-9]+", NUMBER}, // 数字
@@ -53,7 +66,9 @@ static struct rule {
 	{"!=",NOT_EQ},
 	{"&&",AND},
 	{"||",OR},
-	{"!",NOT}
+	{"!",NOT},
+
+
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -106,8 +121,13 @@ static bool make_token(char *e) {
 	regmatch_t pmatch;
 	
 	nr_token = 0;
+	const int ERR_LIMIT = 100;
+	int index_num = 0;
 
 	while(e[position] != '\0') {
+
+		if(index_num++ > ERR_LIMIT){printf("Too many tokens.\n");break;}
+
 		/* Try all rules one by one. */
 		for(i = 0; i < NR_REGEX; i ++) {
 			if(regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
@@ -116,13 +136,6 @@ static bool make_token(char *e) {
 
 				Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s", i, rules[i].regex, position, substr_len, substr_len, substr_start);
 				position += substr_len;
-
-				/* TODO: Now a new token is recognized with rules[i]. Add codes
-				 * to record the token in the array `tokens'. For certain types
-				 * of tokens, some extra actions should be performed.
-				 */
-
-				//tips:这里是词法分析器的存储token的部分，针对不同类型token做出记录
 
 				//检查token长度，之后再对超限情况做出处理
 				if(substr_len>32){printf("Warring: substr_len is more than 32");}
@@ -145,11 +158,14 @@ static bool make_token(char *e) {
 					case OR:break;
 					case NOT:break;
 					case NOTYPE:break;
+					case REG:
+						{strncpy(tokens[nr_token].str,substr_start,substr_len);break;}
 
-					default:panic("please implement me");
+					default:panic("rules switch err\n");
 				}
 
-				//记录token类型
+				//记录token类型,排除空格
+				if(rules[i].token_type == NOTYPE){break;}
 				tokens[nr_token].type = rules[i].token_type; 
 
 				//tokens缓冲区增加,token貌似超出了也能识别到，是由于动态分配内存导致的吗,还是内存上限设置不是上面的32？
@@ -291,8 +307,40 @@ static int searchDomOp(Token* ts,unsigned token_num){
 	return index;
 }
 
+// 根据名称查找寄存器
+char* getREG(const char *regName)
+{
+	int index = -1;
+	const char *regfile[] = {"$zero", "ra", "$tp", "$sp", "a0", "$a1", "$a2", "$a3", "$a4", "$a5", "$a6", "$a7", "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7", "$t8", "$x", "$fp", "$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7", "$s8"};
+    int size = sizeof(regfile) / sizeof(regfile[0]);
 
-// 字符串转数字
+	char* str  =(char*) malloc(sizeof(char)*20);
+	memset(str,'\0',20);
+	int res = 0;
+
+    for (int i = 0; i < size; i++) {
+        if (strcmp(regName, regfile[i]) == 0) {
+            index =  i;
+			break;
+        }
+    }
+
+	if(index == -1)
+	{
+		res = cpu.pc;
+		printf("pc result:%d\n",res);
+		sprintf(str, "%d", res);
+	}
+	else
+	{
+		res = reg_w(index);
+		printf("reg result:%d\n",res);
+		sprintf(str, "%d", res);
+	}
+	return str;
+}
+
+// 16进制字符串转数字
 int HEXToInt(char* str){
 	int result = 0;
     int i = 0;
@@ -350,6 +398,7 @@ int HEXToInt(char* str){
     return result;
 }
 
+// 10进制字符串转数字
 int stringToInt(char* str) {
     int result = 0;
     int sign = 1;
@@ -476,6 +525,19 @@ int expr(char *e, bool *success)
 		*success = false;
 		return 0;
 	}
+	*success = true;
+
+	//在这里替换所有寄存器代号为具体值
+	Token* ptr = tokens;
+	for(int i=0;i<nr_token;i++,ptr++)
+	{
+		if(ptr->type == REG)
+		{
+			ptr->type = NUMBER;
+			char* res = getREG(ptr->str);
+			strcpy(ptr->str,res);
+		}
+	}
 
 	int result = getRecursiveResult(tokens,nr_token);
 	printf("expr result:%d\n",result);
@@ -499,5 +561,10 @@ int callRegExp(char* str){
 		}
 	}
 
-	return expr(str,psuc);
+	int result = expr(str,psuc);
+
+	if(suc == 0){
+		assert(0);
+	}
+	return result;
 }

@@ -12,6 +12,7 @@ void init_wp_pool() {
 	for(i = 0; i < NR_WP; i ++) {
 		wp_pool[i].NO = i;
 		wp_pool[i].next = &wp_pool[i + 1];
+		wp_pool[i].expr = NULL;
 	}
 	wp_pool[NR_WP - 1].next = NULL; //末元素的指针指空
 
@@ -38,7 +39,7 @@ WP* new_wp()
 		for(WP* ptr = free_;(ptr->next)!=NULL;ptr=ptr->next){
 			free_num++;
 		}
-		printf("Left free WP: %d\n",free_num);
+		printf("Left free WP: %d\n",free_num-1);
 		return head;
 	}
 }
@@ -74,11 +75,11 @@ void delete_wp(int id){
 void display_watcher(){
 	printf("using watcher:\n");
 	for(WP* seacher = head;seacher!=NULL;seacher=seacher->next){
-		printf("	No.%d\n",seacher->NO);
+		printf(" No.%d\n",seacher->NO);
 	}
 
 	printf("free watcher:\n");
 	for(WP* seacher = free_;seacher!=NULL;seacher=seacher->next){
-		printf("	No.%d\n",seacher->NO);
+		printf(" No.%d\n",seacher->NO);
 	}
 }
