@@ -231,29 +231,13 @@ static int cmd_x(char* args){
 	}
 
 	//这个部分之后实现表达式求值,记得错误处理
-	printf("add:<%s>\n",args_p);
 	uint32_t Addr = callRegExp(args_p);
 
 	//输出内存数据结果
-	int times = N/4 + 1;
-	if(Addr>4)
-		Addr += (Addr%4);
-	else
-		Addr = 4;
 
-	printf("N:%d,addr:0x%x\n",N,Addr);
-	
-	for(int i=Addr,offset=0;i<times;i++,offset+=4){
-		printf("0x%x:    0x%x\n",Addr+offset,mem_read(Addr+offset, 4));
-		
-	}
-
-
-
-
-	
-	
+	printf("0x%x:    0x%x\n",Addr,mem_read(Addr, N));
 	return 0;
+
 }
 
 
@@ -267,8 +251,10 @@ static int cmd_p(char* args){
 }
 
 
-
-static int cmd_w(char* args){return 0;}
+// 设置监视点
+static int cmd_w(char* args){
+	return 0;
+}
 
 
 static int cmd_d(char* args){

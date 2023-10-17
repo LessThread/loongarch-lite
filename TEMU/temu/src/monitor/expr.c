@@ -372,7 +372,7 @@ int stringToInt(char* str) {
         i++;
     }
 
-	printf("%s :stringToInt: %d\n",str, sign * result);
+	//printf("%s :stringToInt: %d\n",str, sign * result);
     return sign * result;
 }
 
@@ -388,7 +388,7 @@ int getRecursiveResult(Token* ts,unsigned token_num){
 	}
 	if(index == -1)//转数字
 	{	
-		printf("index:%s\n",ts->str);
+		//printf("index:%s\n",ts->str);
 		return stringToInt(ts->str);
 	}
 	if(index == -2)//去括号
@@ -463,7 +463,7 @@ int getRecursiveResult(Token* ts,unsigned token_num){
 	}
 
 
-	printf("%d %s %d = %d\n",res1,icon,res2,res);
+	//printf("%d %s %d = %d\n",res1,icon,res2,res);
 	return res;
 }
 
@@ -477,9 +477,8 @@ int expr(char *e, bool *success)
 		return 0;
 	}
 
-	printf("--------\n");
 	int result = getRecursiveResult(tokens,nr_token);
-	printf("result:%d\n",result);
+	printf("expr result:%d\n",result);
 
 	return result;
 }
