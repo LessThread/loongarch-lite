@@ -17,21 +17,38 @@ WP* new_wp();
 
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
+// char* rl_gets() {
+// 	static char *line_read = NULL;
+
+// 	if (line_read) {
+// 		free(line_read);
+// 		line_read = NULL;
+// 	}
+
+// 	line_read = readline("(temu) ");
+
+// 	if (line_read && *line_read) {
+// 		add_history(line_read);
+// 	}
+
+// 	return line_read;
+// }
 char* rl_gets() {
-	static char *line_read = NULL;
+    static char input[256];  // 假设输入不超过 255 个字符
 
-	if (line_read) {
-		free(line_read);
-		line_read = NULL;
-	}
+    printf("(temu) ");  // 模拟提示符
 
-	line_read = readline("(temu) ");
+    if (fgets(input, sizeof(input), stdin) != NULL) {
+        // 删除末尾的换行符
+        char *newline = strchr(input, '\n');
+        if (newline) {
+            *newline = '\0';
+        }
 
-	if (line_read && *line_read) {
-		add_history(line_read);
-	}
+        return input;
+    }
 
-	return line_read;
+    return NULL;
 }
 
 static int cmd_c(char *args) {
@@ -99,6 +116,8 @@ static int cmd_help(char *args) {
 }
 
 void ui_mainloop() {
+
+	//Readline模式
 	while(1) {
 		char *str = rl_gets();
 		char *str_end = str + strlen(str);

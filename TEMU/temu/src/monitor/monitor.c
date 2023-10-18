@@ -18,16 +18,6 @@ static void init_log() {
 
 //欢迎界面
 static void welcome() {
-	char* hello = 
-	" _    _      _ _         _______ ______ __  __ _    _ \n"
-	"| |  | |    | | |       |__   __|  ____|  \\/  | |  | |\n"
-	"| |__| | ___| | | ___      | |  | |__  | \\  / | |  | |\n"
-	"|  __  |/ _ \\ | |/ _ \\     | |  |  __| | |\\/| | |  | |\n"
-	"| |  | |  __/ | | (_) |    | |  | |____| |  | | |__| |\n"
-	"|_|  |_|\\___|_|_|\\___/     |_|  |______|_|  |_|\\____/ \n"
-		;
-
-	printf("%s\n",hello);
 	printf("Welcome to TEMU!\nThe executable is %s.\nFor help, type \"help\"\n",
 			exec_file);
 }
