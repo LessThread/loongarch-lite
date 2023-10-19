@@ -1,0 +1,5 @@
+Welcome to TEMU!
+The executable is WSLENV=.
+For help, type "help"
+(temu) step: 1
+       0:   15 00 80 04         lu12i.w	a0,	0x80400
