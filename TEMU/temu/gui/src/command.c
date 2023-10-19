@@ -1,14 +1,28 @@
 #include "../inc/command.h"
 
-// void getPC()
-// {
-//     strcpy(input,"")
-// }
+void getPC()
+{
+    strcpy(input,"p $pc\n\0");
+    sendRequest2Core();
+    getRespondFormCore();
+    strcat(output,"\n\0");
+
+    int value = 0;
+    char *ptr = strstr(output, "result:");
+    if (ptr != NULL) {
+        sscanf(ptr + strlen("result:"), "%d", &value);
+        //printf("提取到的值为: %d\n", value);
+    }else{
+        printf("err\n");
+    }
+
+    mvwprintw(pc_win, 1, 1, "$PC:%d",value);
+    wrefresh(pc_win);
+}
 
 
 void sendRequest2Core()
 {
-    number++;
     strcat(input,"\n");
     write(input_pipefd[1], input, strlen(input));
     //fsync(input_pipefd[1]);
@@ -18,24 +32,26 @@ void sendRequest2Core()
 }
 
 char* extract_content(FILE* file) {
-    const char* start_marker = "(temu)";
-    const char* end_marker = "(temu)";
+    const char* marker = "(temu)";
     char line[256];
-    int start_len = strlen(start_marker);
-    int end_len = strlen(end_marker);
-    int is_inside_content = 0;
+    int marker_len = strlen(marker);
     char* content = NULL;
     size_t content_size = 0;
+    int found_marker = 0;
+    
+    // 将文件指针移动到文件开头
+    fseek(file, 0, SEEK_SET);
     
     while (fgets(line, sizeof(line), file) != NULL) {
-        if (strstr(line, end_marker) != NULL) {
-            if (is_inside_content) {
-                break;
-            }
-            is_inside_content = 1;
+        // 检查是否遇到了标记
+        if (strstr(line, marker) != NULL) {
+            found_marker = 1;
+            content_size = 0; // 重置内容大小
+            continue;
         }
         
-        if (is_inside_content) {
+        // 如果已经找到标记，则将读取到的内容存储在字符串中
+        if (found_marker) {
             size_t line_len = strlen(line);
             char* new_content = realloc(content, content_size + line_len + 1);
             if (new_content == NULL) {
@@ -50,6 +66,12 @@ char* extract_content(FILE* file) {
         }
     }
     
+    if (!found_marker) {
+        printf("未找到标记\n");
+        free(content);
+        return NULL;
+    }
+    
     return content;
 }
 
@@ -59,10 +81,14 @@ void getRespondFormCore()
     if (file == NULL) {
         exit(0);
     }
-    
+    sleep(1);
     char* cont = extract_content(file);
+
+    
     strcpy(output,cont);
+    strcat(output,"\n\0");
     free(cont);
+    //printf("%s\n",output);
     fclose(file);
     return;
     // read(output_pipefd[0], output, sizeof(output));
@@ -80,9 +106,13 @@ void getRespondFormCore()
 
 void printRespondInGUI()
 {
-    mvprintw(main_win,2,1, " ");
-    mvprintw(main_win,2,1, "%s", output);
-
+    number++;
+    strcat(output,"\n\0");
+    //printf("%s",output);
+    mvwprintw(main_win, 1,1, "Output:%s",output);
+    box(main_win, 0, 0);
+    wrefresh(main_win);
+    
     mvwprintw(win_1, 1, 1, "num:%d",number);
     wrefresh(win_1);
 }
@@ -155,6 +185,8 @@ void execCommand()
             mvprintw(main_win,2,1, " ");
         }
     }
+
+    getPC();
 
     // 重置输入缓冲区
     for(int i=0;i<80;i++){input[i]='\0';}

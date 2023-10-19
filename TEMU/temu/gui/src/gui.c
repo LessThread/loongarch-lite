@@ -34,7 +34,7 @@ void initGUI()
     wrefresh(icon_win);
 
     // PC显示窗口
-    WINDOW* pc_win = newwin(5, 20, 2, 70);
+    pc_win = newwin(5, 20, 2, 70);
     mvwprintw(pc_win, 1, 1, "$PC:");
     box(pc_win, 0, 0);
     wrefresh(pc_win);
@@ -48,6 +48,7 @@ void initGUI()
     // 显示窗口2
     WINDOW* win_2 = newwin(5, 20, 17, 70);
     box(win_2, 0, 0);
+    mvprintw(win_2, 2,5, "Output:");
     wrefresh(win_2);
 
     //汇编历史显示窗口
@@ -58,8 +59,8 @@ void initGUI()
 
     //主窗口
     main_win = newwin(20, 118, 23, 2);
-    mvprintw(main_win, 1,1, "Output:");
     box(main_win, 0, 0);
+    mvwprintw(main_win, 1,1, "Output:");
     wrefresh(main_win);
 
     // 在命令行下方显示用户输入

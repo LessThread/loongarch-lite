@@ -1,1 +1,7 @@
        0:   15 00 80 04         lu12i.w	a0,	0x80400
+[./temu/src/monitor/expr.c,137,make_token] match rules[0] = "\$pc" at position 0 with len 3: $pc
+[./temu/src/monitor/expr.c,137,make_token] match rules[0] = "\$pc" at position 0 with len 3: $pc
+       4:   03 84 00 85         ori	$a1,	a0,	0x100
+[./temu/src/monitor/expr.c,137,make_token] match rules[0] = "\$pc" at position 0 with len 3: $pc
+       8:   03 83 fc 0c         ori	$t0,	$zero,	0x0ff
+[./temu/src/monitor/expr.c,137,make_token] match rules[0] = "\$pc" at position 0 with len 3: $pc

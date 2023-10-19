@@ -22,6 +22,7 @@ int inputIndex;
 WINDOW* history_win;
 WINDOW* main_win;
 WINDOW* win_1;
+WINDOW* pc_win;
 
 // 核心进程
 char output[_OUTPUT_BUFF_SIZE_];
