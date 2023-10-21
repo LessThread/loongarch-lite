@@ -6,13 +6,16 @@
 static WP wp_pool[NR_WP];
 static WP *head, *free_;
 
+enum { STOP, RUNNING, END };
+extern int temu_state;
+
 void init_wp_pool() {
 	//初始化这个链表
 	int i;
 	for(i = 0; i < NR_WP; i ++) {
 		wp_pool[i].NO = i;
 		wp_pool[i].next = &wp_pool[i + 1];
-		wp_pool[i].expr = NULL;
+		wp_pool[i].expr = (char*)malloc(sizeof(char)*32);
 	}
 	wp_pool[NR_WP - 1].next = NULL; //末元素的指针指空
 
@@ -83,3 +86,34 @@ void display_watcher(){
 		printf(" No.%d\n",seacher->NO);
 	}
 }
+
+
+//每次执行完成后触发调试器的钩子,检查每个调试点的表达式求值
+void WatcherExpHook()
+{
+	if(head != NULL){
+		for(WP* wp=head;;){
+			int res = callRegExp(wp->expr);
+			printf("Watcher NO.%d Exp %s: %d -> %d\n",wp->NO,wp->expr,wp->result,res);
+
+
+			if(res != wp->result){
+				printf("# Watcher NO.%d is hit.Exp %s: %d -> %d\n",wp->NO,wp->expr,wp->result,res);
+				wp->result = res;
+				temu_state = STOP;
+			}
+
+
+			if(wp->next!=NULL){
+				wp = wp->next;
+			}
+			else{
+				break;
+			} 
+		}
+
+		
+	}
+}
+
+//w $pc==-2147483644

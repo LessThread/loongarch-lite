@@ -2,6 +2,7 @@
 #define __WATCHPOINT_H__
 
 #include "common.h"
+#include <stdlib.h>
 
 typedef struct watchpoint {
 	int NO;
@@ -10,5 +11,7 @@ typedef struct watchpoint {
 	int result;
 
 } WP;
+
+void WatcherExpHook();
 
 #endif

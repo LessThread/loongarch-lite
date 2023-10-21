@@ -69,6 +69,7 @@ static int cmd_p(char* args);
 static int cmd_x(char* args);
 static int cmd_w(char* args);
 static int cmd_d(char* args);
+static int cmd_pc(char* args);
 
 static struct {
 	char *name;
@@ -83,8 +84,8 @@ static struct {
 	{ "p","Expression",cmd_p},
 	{ "x","Scan Memory",cmd_x},
 	{ "w","Set up monitoring points",cmd_w},
-	{ "d","Delete Watchpoint",cmd_d}
-
+	{ "d","Delete Watchpoint",cmd_d},
+	{ "pc","Watch $pc",cmd_pc}
 	/* TODO: Add more commands */
 
 };
@@ -277,10 +278,16 @@ static int cmd_p(char* args){
 
 // 设置监视点
 static int cmd_w(char* args){
+	if(args == NULL){
+		printf("watcher need an exp;\n");
+		return 0;
+	}
 	WP* wp = new_wp();
-	wp->expr = args;
+	strcpy(wp->expr,args);
+
+	//首先计算一次表达式,保留初始值
 	wp->result = callRegExp(wp->expr);
-	printf("expr:%s\n",wp->expr);
+	
 	return 0;
 }
 
@@ -313,4 +320,9 @@ static int cmd_d(char* args){
 
 	delete_wp(result);
 	return 0;
+}
+
+static int cmd_pc(char* args){
+	printf("$PC:0x%x  %d\n",cpu.pc,cpu.pc);
+	return 1;
 }

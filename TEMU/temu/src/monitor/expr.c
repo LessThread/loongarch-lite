@@ -237,12 +237,9 @@ static int searchDomOp(Token* ts,unsigned token_num){
 
 			if((scan_ptr->type == '+')||(scan_ptr->type == '-')){
 				//这里处理负数的情况
-				if((dom_op->type == '+')&&(scan_ptr->type == '-'))
-				{
-					if( i == index+1 ){
-						printf("警告:负数请加括号\n");
-						continue;
-					}
+				if( i == index+1 ){
+					printf("#警告:负数请加括号\n");
+					continue;
 				}
 
 
@@ -282,7 +279,7 @@ static int searchDomOp(Token* ts,unsigned token_num){
 
 	//检查括号匹配的完整性
 	if(bracket != 0){
-		Assert(0,"括号匹配不完整\n");
+		Assert(0,"#括号匹配不完整\n");
 	}
 
 	//检查有无运算符
@@ -290,20 +287,21 @@ static int searchDomOp(Token* ts,unsigned token_num){
 		//情况1：无运算符,括号包含了整个算式（3+4）
 		if(ts[0].type == '(')
 		{
-			return -2;
+			index = -2;
 		}
 		//情况2：无运算符,纯非负数字 1
-		return -1;
+		index = -1;
 	}
 
 	//检查是不是纯负数
 	if(index == 0){
 		//纯负数 -1
 		if(dom_op->type == '-'){
-			return -1;
+			index = -3;
 		}
 	}
 
+	//printf("$index: %d\n",index);
 	return index;
 }
 
@@ -328,13 +326,11 @@ char* getREG(const char *regName)
 	if(index == -1)
 	{
 		res = cpu.pc;
-		printf("pc result:%d\n",res);
 		sprintf(str, "%d", res);
 	}
 	else
 	{
 		res = reg_w(index);
-		printf("reg result:%d\n",res);
 		sprintf(str, "%d", res);
 	}
 	return str;
@@ -437,13 +433,23 @@ int getRecursiveResult(Token* ts,unsigned token_num){
 	}
 	if(index == -1)//转数字
 	{	
-		//printf("index:%s\n",ts->str);
 		return stringToInt(ts->str);
 	}
 	if(index == -2)//去括号
 	{
 		ts++;
 		return getRecursiveResult(ts,token_num-2);
+	}
+	if(index == -3)//是负数
+	{	
+		printf("捕获到负数\n");
+		Token li[3];
+		li[0].type = NUMBER;
+		strcpy(li[0].str,"0");
+		li[1].type = '-';
+		li[2].type = NUMBER;
+		strcpy(li[2].str,ts[1].str);
+		return getRecursiveResult(&li[0],3);
 	}
 
 	Token* part1 = ts;
@@ -512,7 +518,7 @@ int getRecursiveResult(Token* ts,unsigned token_num){
 	}
 
 
-	//printf("%d %s %d = %d\n",res1,icon,res2,res);
+	printf("%d %s %d = %d\n",res1,icon,res2,res);
 	return res;
 }
 
