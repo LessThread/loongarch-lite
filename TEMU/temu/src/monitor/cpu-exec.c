@@ -6,7 +6,7 @@
  * This is useful when you use the `si' command.
  * You can modify this value as you want.
  */
-#define MAX_INSTR_TO_PRINT 10
+#define MAX_INSTR_TO_PRINT 100
 
 int temu_state = STOP;
 
@@ -27,11 +27,6 @@ void print_bin_instr(uint32_t pc) {
 	sprintf(asm_buf + l, "%*.s", 8, "");
 }
 
-/* Simulate how the MiniMIPS32 CPU works. */
-/*
-	传入参数-1的意义是让cpu_exec函数连续执行指令，
-	直到模拟器的状态发生变化，而不需要明确指定要执行的指令数量
-*/
 void cpu_exec(volatile uint32_t n) {
 	
 	uint32_t pc;
@@ -47,7 +42,7 @@ void cpu_exec(volatile uint32_t n) {
 
 	for(; n > 0; n --) {
 
-		pc = cpu.pc & 0x7FFFFFFF;  //将虚拟地址映射到物理地址，例如cpu中的最高位。清除pc
+		pc = cpu.pc & 0x1fffffff;  //将虚拟地址映射到物理地址，例如cpu中的最高位。清除pc
 		
 #ifdef DEBUG
 		uint32_t pc_temp = pc;
@@ -57,6 +52,15 @@ void cpu_exec(volatile uint32_t n) {
 		}
 #endif
 
+		if ((cpu.pc & 0x3) != 0 ) {
+
+			printf("ERROR: Instruction_Fetch Exception occured.\n");
+			printf("The program has been forced to exit!\n");
+			temu_state = STOP;
+			cpu.pc = 0xbfc00380;
+			break;
+		}
+
 		/*执行一条指令，包括指令获取，指令解码和实际执行*/
 		exec(pc);
 
@@ -65,7 +69,7 @@ void cpu_exec(volatile uint32_t n) {
 //trace实现
 #ifdef DEBUG
 		char buf[32] = {0};
-		sprintf(buf, "bfc%.8x: ", pc_temp);
+		sprintf(buf, "0x%.8x: ", pc_temp);
 		Trace_write("%s %s\n",buf,golden_trace);
 #endif
 

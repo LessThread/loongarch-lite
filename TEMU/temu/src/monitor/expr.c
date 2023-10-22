@@ -238,7 +238,7 @@ static int searchDomOp(Token* ts,unsigned token_num){
 			if((scan_ptr->type == '+')||(scan_ptr->type == '-')){
 				//这里处理负数的情况
 				if( i == index+1 ){
-					printf("#警告:负数请加括号\n");
+					//printf("#警告:负数请加括号\n");
 					continue;
 				}
 
@@ -442,7 +442,7 @@ int getRecursiveResult(Token* ts,unsigned token_num){
 	}
 	if(index == -3)//是负数
 	{	
-		printf("捕获到负数\n");
+		//printf("捕获到负数\n");
 		Token li[3];
 		li[0].type = NUMBER;
 		strcpy(li[0].str,"0");
@@ -518,7 +518,7 @@ int getRecursiveResult(Token* ts,unsigned token_num){
 	}
 
 
-	printf("%d %s %d = %d\n",res1,icon,res2,res);
+	//printf("%d %s %d = %d\n",res1,icon,res2,res);
 	return res;
 }
 
@@ -546,7 +546,7 @@ int expr(char *e, bool *success)
 	}
 
 	int result = getRecursiveResult(tokens,nr_token);
-	printf("expr result:%d\n",result);
+	//printf("expr result:%d\n",result);
 
 	return result;
 }

@@ -98,7 +98,7 @@ void WatcherExpHook()
 
 
 			if(res != wp->result){
-				printf("# Watcher NO.%d is hit.Exp %s: %d -> %d\n",wp->NO,wp->expr,wp->result,res);
+				printf("# Watcher NO.%d is hit %s %d -> %d\n",wp->NO,wp->expr,wp->result,res);
 				wp->result = res;
 				temu_state = STOP;
 			}

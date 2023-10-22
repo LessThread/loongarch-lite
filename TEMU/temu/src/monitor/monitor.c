@@ -1,6 +1,6 @@
 #include "temu.h"
 
-#define ENTRY_START 0x80000000
+#define ENTRY_START 0xbfc00000
 
 char *exec_file;
 
@@ -52,7 +52,7 @@ static void load_entry() {
 	fseek(fp, 0, SEEK_END);
 	size_t file_size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
-	ret = fread((void *)(hw_mem + (ENTRY_START & 0x7FFFFFFF)), file_size, 1, fp);  
+	ret = fread((void *)(hw_mem + (ENTRY_START &  0x1fffffff)), file_size, 1, fp);  
 
 	// load .text segment to memory address 0x00000000
 	// 将程序的代码段加载入0x0
@@ -65,7 +65,7 @@ static void load_entry() {
 	fseek(fp, 0, SEEK_END);
 	file_size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
-	ret = fread((void *)(hw_mem + ((ENTRY_START + 0x400000) & 0x7FFFFFFF)), file_size, 1, fp); // load .data segment to memory address 0x00400000
+	ret = fread((void *)(hw_mem + ((ENTRY_START + 0x400000) &  0x1fffffff)), file_size, 1, fp); // load .data segment to memory address 0x00400000
 
 	fclose(fp);
 }
