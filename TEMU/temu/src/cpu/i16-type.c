@@ -5,6 +5,7 @@
 
 extern uint32_t instr;
 extern char assembly[80];
+extern char golden_trace[128];
 
 /* decode I16-type instrucion with unsigned immediate */
 static void decode_i16_type(uint32_t instr) {
@@ -38,8 +39,8 @@ make_helper(beq) {
 	        temp = (op_src2->val << 2) | 0x00000000;
         cpu.pc = cpu.pc + temp;
     }
-	
-	sprintf(assembly, "beq\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
+	sprintf(assembly, "beq  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
+	sprintf(golden_trace,"%s    0x%08x ",REG_NAME(op_dest->reg),0);
 }
 
 make_helper(bne) {
@@ -55,8 +56,8 @@ make_helper(bne) {
 	        temp = (op_src2->val << 2) | 0x00000000;
         cpu.pc = cpu.pc + temp;
     }
-	
-	sprintf(assembly, "bne\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
+	sprintf(assembly, "bne  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
+	sprintf(golden_trace,"%s    0x%08x ",REG_NAME(op_dest->reg),0);
 }
 
 make_helper(bge) {
@@ -72,7 +73,7 @@ make_helper(bge) {
 	        temp = (op_src2->val << 2) | 0x00000000;
         cpu.pc = cpu.pc + temp;
     }
-	
-	sprintf(assembly, "bge\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
+	sprintf(assembly, "bge  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
+	sprintf(golden_trace,"%s    0x%08x ",REG_NAME(op_dest->reg),0);
  
 }

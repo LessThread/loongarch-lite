@@ -5,11 +5,18 @@
 #include <assert.h>
 
 extern FILE* log_fp;
+extern FILE* trace_fp;
 
 #ifdef LOG_FILE
 #	define Log_write(format, ...) fprintf(log_fp, format, ## __VA_ARGS__), fflush(log_fp)
 #else
 #	define Log_write(format, ...)
+#endif
+
+#ifdef Trace_FILE
+#	define Trace_write(format, ...) fprintf(trace_fp, format, ## __VA_ARGS__), fflush(trace_fp)
+#else
+#	define Trace_write(format, ...)
 #endif
 
 #define Log(format, ...) \

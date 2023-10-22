@@ -94,7 +94,7 @@ void WatcherExpHook()
 	if(head != NULL){
 		for(WP* wp=head;;){
 			int res = callRegExp(wp->expr);
-			printf("Watcher NO.%d Exp %s: %d -> %d\n",wp->NO,wp->expr,wp->result,res);
+			// printf("Watcher NO.%d Exp %s: %d -> %d\n",wp->NO,wp->expr,wp->result,res);
 
 
 			if(res != wp->result){

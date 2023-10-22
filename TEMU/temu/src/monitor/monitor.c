@@ -9,11 +9,14 @@ void init_wp_pool();
 void init_ddr3();
 
 FILE *log_fp = NULL;
+FILE *trace_fp = NULL;
 
-//初始化日志
+//初始化日志和追踪文件
 static void init_log() {
 	log_fp = fopen("log.txt", "w");
 	Assert(log_fp, "Can not open 'log.txt'");
+	trace_fp = fopen("trace.txt", "w");
+	Assert(trace_fp, "Can not open 'trace.txt'");
 }
 
 //欢迎界面

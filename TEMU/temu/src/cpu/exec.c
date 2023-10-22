@@ -127,6 +127,8 @@ op_fun _group2_i12_opcode_table [16] = {
 /* 0x0c */	inv, inv, inv, inv
 };
 
+
+//这个就是exec函数的实现
 make_helper(exec) {
 	instr = instr_fetch(pc, 4);
 	ops_decoded.opcode1 = instr >> 26;

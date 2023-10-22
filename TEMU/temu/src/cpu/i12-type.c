@@ -7,6 +7,7 @@
 
 extern uint32_t instr;
 extern char assembly[80];
+extern char golden_trace[128];
 
 /* decode I12-type instrucion with unsigned immediate */
 static void decode_ui12_type(uint32_t instr) {
@@ -28,7 +29,7 @@ make_helper(ori) {
 
 	decode_ui12_type(instr);
 	reg_w(op_dest->reg) = op_src1->val | op_src2->val;
-	sprintf(assembly, "ori\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), op_src2->imm);
+	sprintf(assembly, "ori  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), op_src2->imm);
 }
 make_helper(addi_w) {
 	decode_ui12_type(instr);
@@ -39,16 +40,20 @@ make_helper(addi_w) {
 	   temp = op_src2->val | 0xFFFFFFFF;
 	else
 	   temp = op_src2->val | 0x00000000;
-	
+
 	reg_w(op_dest->reg) = (op_src1->val + temp);
-	sprintf(assembly, "addi.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
+
+	sprintf(assembly, "addi.w  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
+	sprintf(golden_trace,"%s    0x%08x",REG_NAME(op_dest->reg),reg_w(op_dest->reg));
 }
 
 make_helper(andi) {
 	decode_ui12_type(instr);
 	// 是否需要考虑溢出问题而进行位置的框选
 	reg_w(op_dest->reg) = (op_src1->val & op_src2->val);
-	sprintf(assembly, "andi\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
+
+	sprintf(assembly, "andi  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
+	sprintf(golden_trace,"%s    0x%08x",REG_NAME(op_dest->reg),reg_w(op_dest->reg));
 }
 
 make_helper(ld_w) {
@@ -66,7 +71,9 @@ make_helper(ld_w) {
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
 	reg_w(op_dest->reg) = mem_read(vaddr,4);
-	sprintf(assembly, "ld.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
+	sprintf(assembly, "ld.w  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
+	sprintf(golden_trace,"%s    0x%08x",REG_NAME(op_dest->reg),reg_w(op_dest->reg));
+
 }
 
 make_helper(ld_b) {
@@ -84,7 +91,9 @@ make_helper(ld_b) {
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
 	reg_w(op_dest->reg) = mem_read(vaddr,1);
-	sprintf(assembly, "ld.b\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
+	sprintf(assembly, "ld.b  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
+	sprintf(golden_trace,"%s    0x%08x",REG_NAME(op_dest->reg),reg_w(op_dest->reg));
+
 }
 
 make_helper(st_w) {
@@ -102,7 +111,7 @@ make_helper(st_w) {
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
 	mem_write(vaddr, 4, reg_w(op_dest->reg));
-	sprintf(assembly, "st.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
+	sprintf(assembly, "st.w  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
 }
 
 make_helper(st_b) {
@@ -120,5 +129,6 @@ make_helper(st_b) {
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
 	mem_write(vaddr, 1, reg_w(op_dest->reg));
-	sprintf(assembly, "st.b\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
+	sprintf(assembly, "st.b  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
+	sprintf(golden_trace,"%s    0x%08x",REG_NAME(op_dest->reg),0);
 }

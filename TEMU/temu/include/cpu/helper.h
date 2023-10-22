@@ -8,7 +8,7 @@
 
 #define concat(x, y) concat_temp(x, y)
 
-/* All function defined with 'make_helper' return the length of the operation. */
+/*使用“make_helper”定义的所有函数都返回操作的长度*/
 #define make_helper(name) void name(uint32_t pc)
 
 static inline uint32_t instr_fetch(uint32_t addr, size_t len) {

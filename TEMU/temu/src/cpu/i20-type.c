@@ -4,6 +4,7 @@
 
 extern uint32_t instr;
 extern char assembly[80];
+extern char golden_trace[128];
 
 /* decode I20-type instrucion with signed immediate */
 static void decode_i20_type(uint32_t instr) {
@@ -21,13 +22,15 @@ make_helper(lu12i_w) {
 
 	decode_i20_type(instr);
 	reg_w(op_dest->reg) = (op_src2->val << 12);
-	sprintf(assembly, "lu12i.w\t%s,\t0x%04x", REG_NAME(op_dest->reg), op_src2->imm);
+	sprintf(assembly, "lu12i.w  %s,  0x%04x", REG_NAME(op_dest->reg), op_src2->imm);
+	sprintf(golden_trace,"%s    0x%08x",REG_NAME(op_dest->reg),reg_w(op_dest->reg));
 }
 
 make_helper(pcaddu12i){
 
 	decode_i20_type(instr);
 	reg_w(op_dest->reg) = (op_src2->val << 12) + cpu.pc;
-	sprintf(assembly, "pcaddu12i\t%s,\t0x%04x", REG_NAME(op_dest->reg), op_src2->imm);
+	sprintf(assembly, "pcaddu12i  %s,  0x%04x", REG_NAME(op_dest->reg), op_src2->imm);
+	sprintf(golden_trace,"%s    0x%08x",REG_NAME(op_dest->reg),reg_w(op_dest->reg));
 
 }

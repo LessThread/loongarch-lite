@@ -17,39 +17,40 @@ WP* new_wp();
 
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
-// char* rl_gets() {
-// 	static char *line_read = NULL;
-
-// 	if (line_read) {
-// 		free(line_read);
-// 		line_read = NULL;
-// 	}
-
-// 	line_read = readline("(temu) ");
-
-// 	if (line_read && *line_read) {
-// 		add_history(line_read);
-// 	}
-
-// 	return line_read;
-// }
 char* rl_gets() {
-    static char input[256];  // 假设输入不超过 255 个字符
+	static char *line_read = NULL;
 
-    printf("(temu) ");  // 模拟提示符
+	if (line_read) {
+		free(line_read);
+		line_read = NULL;
+	}
 
-    if (fgets(input, sizeof(input), stdin) != NULL) {
-        // 删除末尾的换行符
-        char *newline = strchr(input, '\n');
-        if (newline) {
-            *newline = '\0';
-        }
+	line_read = readline("(temu) ");
 
-        return input;
-    }
+	if (line_read && *line_read) {
+		add_history(line_read);
+	}
 
-    return NULL;
+	return line_read;
 }
+
+// char* rl_gets() {
+//     static char input[256];  // 假设输入不超过 255 个字符
+
+//     printf("(temu) ");  // 模拟提示符
+
+//     if (fgets(input, sizeof(input), stdin) != NULL) {
+//         // 删除末尾的换行符
+//         char *newline = strchr(input, '\n');
+//         if (newline) {
+//             *newline = '\0';
+//         }
+
+//         return input;
+//     }
+
+//     return NULL;
+// }
 
 static int cmd_c(char *args) {
 	//向CPU执行传入了-1的参数
@@ -196,7 +197,7 @@ static int cmd_si(char *args){
 	
 
 	//执行指定步数
-	printf("step: %d\n",result);
+	printf("step: +%d\n",result);
 	cpu_exec(result);
 	return 0;
 }
@@ -260,7 +261,7 @@ static int cmd_x(char* args){
 
 	//输出内存数据结果
 
-	printf("0x%x:    0x%x\n",Addr,mem_read(Addr, N));
+	printf("0x%x:    0x%.8x\n",Addr,mem_read(Addr, N));
 	return 0;
 
 }

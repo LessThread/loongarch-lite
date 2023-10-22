@@ -8,9 +8,10 @@ const char *regfile[] = {"$zero", "ra", "$tp", "$sp", "a0", "$a1", "$a2", "$a3",
 void display_reg() {
         int i;
         for(i = 0; i < 32; i ++) {
-                printf("%s\t\t0x%08x\t\t%d\n", regfile[i], cpu.gpr[i]._32, cpu.gpr[i]._32);
+                printf("%s    0x%08x    %d\n", regfile[i], cpu.gpr[i]._32, cpu.gpr[i]._32);
         }
 
-        printf("%s\t\t0x%08x\t\t%d\n", "$pc", cpu.pc, cpu.pc);
+        printf("%s    0x%08x    %d\n", "$pc", cpu.pc, cpu.pc);
+        
 }
 
