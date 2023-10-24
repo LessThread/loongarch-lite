@@ -6,7 +6,7 @@
 .text
 .globl main
 main:
-    addi.w $t0,$zero,0x1
+    addi.w $t0,$zero,0x1 # $t0 = 1
     addi.w $t1,$zero,0xA
     add.w $t0,$t0,$t0
     sltu $t2,$t0,$t1
