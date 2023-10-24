@@ -546,7 +546,7 @@ int expr(char *e, bool *success)
 	}
 
 	int result = getRecursiveResult(tokens,nr_token);
-	//printf("expr result:%d\n",result);
+	printf("expr result:%d\n",result);
 
 	return result;
 }
