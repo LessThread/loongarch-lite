@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/潘辰誉/大三/大三上/计组/实验/computer-composition-structure/TEMU/temu/src/cpu",
-      "program": "d:/潘辰誉/大三/大三上/计组/实验/computer-composition-structure/TEMU/temu/src/cpu/build/Debug/outDebug",
+      "cwd": "d:/潘辰誉/大三/大三上/计组/实验/computer-composition-structure/TEMU/temu/src/monitor",
+      "program": "d:/潘辰誉/大三/大三上/计组/实验/computer-composition-structure/TEMU/temu/src/monitor/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

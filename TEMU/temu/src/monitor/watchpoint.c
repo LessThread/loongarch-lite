@@ -52,15 +52,19 @@ void free_wp(WP *wp){
 		printf("No WP in using.\n");
 		return;
 	}
+	else if(head==wp){
+			head = wp->next;
+			wp->next = free_;
+			free_ = wp;
+	}
 	else{
 		WP* tail = head;
 		for(;tail->next != wp ;tail = tail->next){
 
 		}
-		tail->next = wp->next;
-		wp->next = free_;
-		free_ = wp;
-		
+			tail->next = wp->next;
+			wp->next = free_;
+			free_ = wp;
 	}
 }
 

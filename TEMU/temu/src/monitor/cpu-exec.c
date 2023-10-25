@@ -61,7 +61,7 @@ void cpu_exec(volatile uint32_t n) {
 //trace实现
 #ifdef DEBUG
 		char buf[32] = {0};
-		sprintf(buf, "0x%.8x: ", pc_temp);
+		sprintf(buf, "0x8%.7x: ", pc_temp);
 		Trace_write("%s %s\n",buf,golden_trace);
 #endif
 
