@@ -63,8 +63,8 @@ make_helper(bne) {
 make_helper(bge) {
 
     decode_i16_type(instr);
-	//默认为有符号数吗？
-    if(op_dest->val >= op_src1->val)
+	
+    if(op_src1->val >= op_dest->val)
     {
         uint32_t temp;
       	if((op_src2->val >> 15) == 1)

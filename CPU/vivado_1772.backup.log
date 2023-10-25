@@ -1,0 +1,32 @@
+#-----------------------------------------------------------
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:38:27 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Tue Oct 24 16:36:37 2023
+# Process ID: 1772
+# Current directory: C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent10944 C:\Users\24121\Desktop\minimip32-lite-master\minimip32-lite-master\CPU\project_1\project_1.xpr
+# Log file: C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/vivado.log
+# Journal file: C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.xpr
+CRITICAL WARNING: [Project 1-19] Could not find the file 'C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/and_inst.coe'.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'E:/Xilinx/Vivado/2018.3/data/ip'.
+WARNING: [IP_Flow 19-2162] IP 'inst_rom' is locked:
+* IP definition 'Block Memory Generator (8.4)' for IP 'inst_rom' (customized with software release 2019.2) has a different revision in the IP Catalog.
+* Current project part 'xc7k70tfbv676-1' and the part 'xc7k325tffg900-2' used to customize the IP 'inst_rom' do not match.
+Please select 'Report IP Status' from the 'Tools/Report' menu or run Tcl command 'report_ip_status' for more information.
+WARNING: [IP_Flow 19-2162] IP 'clkdiv' is locked:
+* IP definition 'Clocking Wizard (6.0)' for IP 'clkdiv' (customized with software release 2019.2) has a different revision in the IP Catalog.
+* Current project part 'xc7k70tfbv676-1' and the part 'xc7k325tffg900-2' used to customize the IP 'clkdiv' do not match.
+Please select 'Report IP Status' from the 'Tools/Report' menu or run Tcl command 'report_ip_status' for more information.
+open_project: Time (s): cpu = 00:00:16 ; elapsed = 00:00:10 . Memory (MB): peak = 721.367 ; gain = 115.199
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+exit
+INFO: [Common 17-206] Exiting Vivado at Tue Oct 24 21:18:21 2023...
