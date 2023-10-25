@@ -40,7 +40,7 @@ make_helper(beq) {
         cpu.pc = cpu.pc + temp;
     }
 	sprintf(assembly, "beq  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
-	sprintf(golden_trace,"%s    0x%08x ",REG_NAME(op_dest->reg),0);
+	//sprintf(golden_trace,"%s    0x%08x ",REG_NAME(op_dest->reg),0);
 }
 
 make_helper(bne) {
@@ -57,7 +57,7 @@ make_helper(bne) {
         cpu.pc = cpu.pc + temp;
     }
 	sprintf(assembly, "bne  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
-	sprintf(golden_trace,"%s    0x%08x ",REG_NAME(op_dest->reg),0);
+	//sprintf(golden_trace,"%s    0x%08x ",REG_NAME(op_dest->reg),0);
 }
 
 make_helper(bge) {
@@ -72,8 +72,13 @@ make_helper(bge) {
 	    else
 	        temp = (op_src2->val << 2) | 0x00000000;
         cpu.pc = cpu.pc + temp;
+		printf("temp: %d\n",temp);
     }
+	else{
+		printf("no\n");
+	}
+	
 	sprintf(assembly, "bge  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->val), NULL, 10));
-	sprintf(golden_trace,"%s    0x%08x ",REG_NAME(op_dest->reg),0);
+	//sprintf(golden_trace,"%s    0x%08x ",REG_NAME(op_dest->reg),0);
  
 }

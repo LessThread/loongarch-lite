@@ -86,7 +86,8 @@ static struct {
 	{ "x","Scan Memory",cmd_x},
 	{ "w","Set up monitoring points",cmd_w},
 	{ "d","Delete Watchpoint",cmd_d},
-	{ "pc","Watch $pc",cmd_pc}
+	{ "pc","Watch $pc",cmd_pc},
+	{"n","next",cmd_si}
 	/* TODO: Add more commands */
 
 };
