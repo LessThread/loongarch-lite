@@ -42,7 +42,7 @@ void cpu_exec(volatile uint32_t n) {
 
 	for(; n > 0; n --) {
 
-		pc = cpu.pc & 0x1fffffff;  //将虚拟地址映射到物理地址，例如cpu中的最高位。清除pc
+		pc = cpu.pc & 0x7fffffff;  //将虚拟地址映射到物理地址，例如cpu中的最高位。清除pc
 		
 #ifdef DEBUG
 		uint32_t pc_temp = pc;
@@ -52,14 +52,6 @@ void cpu_exec(volatile uint32_t n) {
 		}
 #endif
 
-		if ((cpu.pc & 0x3) != 0 ) {
-
-			printf("ERROR: Instruction_Fetch Exception occured.\n");
-			printf("The program has been forced to exit!\n");
-			temu_state = STOP;
-			cpu.pc = 0xbfc00380;
-			break;
-		}
 
 		/*执行一条指令，包括指令获取，指令解码和实际执行*/
 		exec(pc);
