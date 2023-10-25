@@ -1,79 +1,50 @@
-#include "temu.h"
-#include <stdlib.h>
-/* We use the POSIX regex functions to process regular expressions.
- * Type 'man regex' for more information about POSIX regex functions.
- */
+#include "../../include/temu.h"
 
-//PS 此段的计算式不知道要实现到什么程度，暂且计划实现普通数学计算和寄存器
 #include <sys/types.h>
 #include <regex.h>
+#include <stdlib.h>
 
-// 规则编号
-/* TODO: Add more token types */
+#define TOKEN_SIZE 32
 
-# define TOKEN_LEVEL_1 128
-# define TOKEN_LEVEL_2 256
-# define TOKEN_LEVEL_3 512
-# define TOKEN_LEVEL_4 1024
+
 enum {
-	//运算符小于lv1
-
-	EQ = TOKEN_LEVEL_1+1,
-	NOT_EQ,
-	AND,
-	OR,
-	NOT,
-
-	HEX = TOKEN_LEVEL_2+1,
-	NUMBER,
-
-	NOTYPE = TOKEN_LEVEL_3+1,
-	REG = TOKEN_LEVEL_4 + 1,
+	NOTYPE = 256, 
+	EQ,NEQ,AND,OR, 
+	DEREF,NGE,NOT,
+	REG, NUMBER, HEX,
 };
 
-
-// 正则表达式的规则树实现
 static struct rule {
 	char *regex;
 	int token_type;
 } rules[] = {
-	{"\\$pc",REG},
-	{"\\$zero", REG},            // $zero
-    {"ra", REG},                 // ra
-    {"\\$tp", REG},              // $tp
-    {"\\$sp", REG},              // $sp
-    {"a[0-9]", REG},             // a0-a9
-    {"\\$a[1-7]", REG},          // $a1-$a7
-    {"\\$t[0-8]", REG},          // $t0-$t8
-    {"\\$x", REG},               // $x
-    {"\\$fp", REG},              // $fp
-    {"\\$s[0-8]", REG},           // $s0-$s8
-
-	{"0x[0-9A-Fa-f]+",HEX},//16进制数
-	{"[0-9]+", NUMBER}, // 数字
-
-	{" +",	NOTYPE},// 匹配空格
-	{"\\(", '('}, // 左括号 
-  	{"\\)", ')'}, // 右括号
-
-	{"\\*", '*'}, // 乘法
-  	{"/", '/'}, // 除法
-
-	{"\\+", '+'},// 加法
-	{"-", '-'}, // 减法
-
-	{"==", EQ},// equal
-	{"!=",NOT_EQ},
-	{"&&",AND},
-	{"||",OR},
-	{"!",NOT},
-
-
+	{" +",	NOTYPE},				
+	{"\\+", '+'},					
+	{"==", EQ},						
+	{"!=", NEQ},
+	{"-", '-'},					
+	{"\\*", '*'},					
+	{"/", '/'},					
+	{"&&", AND},
+	{"\\|\\|", OR},
+	{"!", NOT},
+	{"-", NGE},						//负数
+	{"\\*", DEREF},					//指针
+	{"\\(", '('},
+	{"\\)", ')'},
+	{"\\$[a-z][0-9]",REG},                             
+    {"\\$[a-z]*",REG},                             
+	{"0x[0-9a-fA-F]+", HEX},		//16进制实现	
+	{"[0-9]+", NUMBER},				
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
 
 static regex_t re[NR_REGEX];
+
+uint32_t getRecursiveResult(uint32_t left,uint32_t right);
+bool checkBracket(uint32_t left,uint32_t right);
+uint32_t searchDomOp(uint32_t left, uint32_t right);
 
 void init_regex() {
 	int i;
@@ -89,87 +60,56 @@ void init_regex() {
 	}
 }
 
-
-# define TOKEN_STR_SIZE 32
 typedef struct token {
 	int type;
-	char str[TOKEN_STR_SIZE];
+	char str[TOKEN_SIZE];
 } Token;
 
-
-// 预留词法分析的token缓冲区（这是tm的编译原理吗）
-#define TOKENS_SIZE 32
-#define UNCATCH_TOKEN -404
-
-Token tokens[TOKENS_SIZE];
-
-
-typedef struct comput_unit{
-	Token comput_token[TOKENS_SIZE];
-}comput_unit;
-comput_unit unit[TOKENS_SIZE];
-int unit_size = 0;
-
-
-// token序列号
+Token tokens[TOKEN_SIZE];
 int nr_token;
 
-//token识别函数
+//以上是初始化部分
+
+//正则表达式解析
 static bool make_token(char *e) {
 	int position = 0;
 	int i;
 	regmatch_t pmatch;
 	
 	nr_token = 0;
-	const int ERR_LIMIT = 100;
-	int index_num = 0;
 
 	while(e[position] != '\0') {
-
-		if(index_num++ > ERR_LIMIT){printf("Too many tokens.\n");break;}
-
-		/* Try all rules one by one. */
 		for(i = 0; i < NR_REGEX; i ++) {
 			if(regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
 				char *substr_start = e + position;
 				int substr_len = pmatch.rm_eo;
 
 				Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s", i, rules[i].regex, position, substr_len, substr_len, substr_start);
-				position += substr_len;
 
-				//检查token长度，之后再对超限情况做出处理
-				if(substr_len>32){printf("Warring: substr_len is more than 32");}
-
-				switch(rules[i].token_type) 
-				{
-					case NUMBER:
-						{strncpy(tokens[nr_token].str,substr_start,substr_len);break;}
-					case HEX:
-						{strncpy(tokens[nr_token].str,substr_start,substr_len);break;}
-					case '+':break;
-					case '-':break;
-					case '*':break;
-					case '/':break;
-					case '(':break;
-					case ')':break;
-					case EQ:break;
-					case NOT_EQ:break;
-					case AND:break;
-					case OR:break;
-					case NOT:break;
-					case NOTYPE:break;
-					case REG:
-						{strncpy(tokens[nr_token].str,substr_start,substr_len);break;}
-
-					default:panic("rules switch err\n");
+				switch(rules[i].token_type) {
+					case NOTYPE:break;				
+					//区分解引用和乘法
+					case '*':
+						if(nr_token==0 || ((tokens[nr_token-1].type!=NUMBER) && (tokens[nr_token-1].type!=HEX) && (tokens[nr_token-1].type!=')')))
+						{
+								tokens[nr_token].type=DEREF;
+								nr_token++;
+								break;
+						}
+					case '-'://区分负数和减法
+						if(nr_token==0 || ((tokens[nr_token-1].type!=NUMBER) && (tokens[nr_token-1].type!=HEX) && (tokens[nr_token-1].type!=')')))
+						{
+								tokens[nr_token].type=NGE;
+								nr_token++;
+								break;
+						}	
+					default:
+						tokens[nr_token].type = rules[i].token_type;
+						strncpy(tokens[nr_token].str,substr_start,substr_len);
+						nr_token++;
+						break;
 				}
-
-				//记录token类型,排除空格
-				if(rules[i].token_type == NOTYPE){break;}
-				tokens[nr_token].type = rules[i].token_type; 
-
-				//tokens缓冲区增加,token貌似超出了也能识别到，是由于动态分配内存导致的吗,还是内存上限设置不是上面的32？
-				nr_token++;
+				position += substr_len;
 
 				break;
 			}
@@ -181,139 +121,18 @@ static bool make_token(char *e) {
 		}
 	}
 
-	//词法分析器调试部分
-
-
-	//return的时候注意token计数器是否需要归零？
 	return true; 
 }
 
-
-// 找到dominant operator的封装函数
-static int searchDomOp(Token* ts,unsigned token_num){
-
-	if(ts == NULL){
-		Assert(0,"错误:空指针错误exp-01\n");
-	}
-
-	Token* scan_ptr = ts;
-	Token* dom_op = NULL;
-
-	int bracket = 0;
-	int index = -1;
-
-
-
-	for(int i=0; i<token_num; scan_ptr++,i++)
-	{
-
-		// 匹配括号(bug fix:只有括号的情况，bug,多重括号会有问题)
-		if(scan_ptr->type == '('){
-			bracket += 1;
-			continue;
-		}
-
-		if(bracket == 1)
-		{
-			if(scan_ptr->type == ')')
-			{
-				bracket -=1 ;
-			}
-			continue;
-
-		}
-
-		
-
-		// 扫描运算符
-		
-		if(scan_ptr->type < TOKEN_LEVEL_1)
-		{
-
-			if(dom_op == NULL){
-				dom_op = scan_ptr;
-				index = i;
-			}
-
-			if((scan_ptr->type == '+')||(scan_ptr->type == '-')){
-				//这里处理负数的情况
-				if( i == index+1 ){
-					//printf("#警告:负数请加括号\n");
-					continue;
-				}
-
-
-				dom_op = scan_ptr;
-				index = i;
-			}
-
-			if((scan_ptr->type == '*')||(scan_ptr->type == '/')){
-				if((dom_op->type == '+')||(scan_ptr->type == '-')){
-					continue;
-				}
-				dom_op = scan_ptr;
-				index = i;
-			}
-		}
-
-		if((scan_ptr->type < TOKEN_LEVEL_2)&&(scan_ptr->type > TOKEN_LEVEL_1))
-		{
-			dom_op = scan_ptr;
-			index = i;
-
-			if((scan_ptr->type == AND)||(scan_ptr->type == OR)){
-				dom_op = scan_ptr;
-				index = i;
-			}
-			else{
-				if((scan_ptr->type == NOT_EQ)||(scan_ptr->type == EQ)){
-					dom_op = scan_ptr;
-					index = i;
-				}
-			}
-			
-		}
-
-		
-	}
-
-	//检查括号匹配的完整性
-	if(bracket != 0){
-		Assert(0,"#括号匹配不完整\n");
-	}
-
-	//检查有无运算符
-	if(index == -1){
-		//情况1：无运算符,括号包含了整个算式（3+4）
-		if(ts[0].type == '(')
-		{
-			index = -2;
-		}
-		//情况2：无运算符,纯非负数字 1
-		index = -1;
-	}
-
-	//检查是不是纯负数
-	if(index == 0){
-		//纯负数 -1
-		if(dom_op->type == '-'){
-			index = -3;
-		}
-	}
-
-	//printf("$index: %d\n",index);
-	return index;
-}
-
 // 根据名称查找寄存器
-char* getREG(const char *regName)
+int getREG(const char *regName)
 {
+	if(strcmp("$pc",regName)==0)
+		return cpu.pc;
 	int index = -1;
 	const char *regfile[] = {"$zero", "ra", "$tp", "$sp", "a0", "$a1", "$a2", "$a3", "$a4", "$a5", "$a6", "$a7", "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7", "$t8", "$x", "$fp", "$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7", "$s8"};
     int size = sizeof(regfile) / sizeof(regfile[0]);
 
-	char* str  =(char*) malloc(sizeof(char)*20);
-	memset(str,'\0',20);
 	int res = 0;
 
     for (int i = 0; i < size; i++) {
@@ -325,252 +144,217 @@ char* getREG(const char *regName)
 
 	if(index == -1)
 	{
-		res = cpu.pc;
-		sprintf(str, "%d", res);
+		printf("[ERROR] The register in the expression does not exist!\n");
 	}
 	else
 	{
 		res = reg_w(index);
-		sprintf(str, "%d", res);
+
 	}
-	return str;
-}
-
-// 16进制字符串转数字
-int HEXToInt(char* str){
-	int result = 0;
-    int i = 0;
-
-    while (str[i] != '\0') 
-	{
-		int digit = str[i] - '0';
-		switch (str[i])
-		{
-		case 'a':
-			digit = 10;
-			break;
-		case 'b':
-			digit = 11;
-			break;
-		case 'c':
-			digit = 12;
-			break;
-		case 'd':
-			digit = 13;
-			break;
-		case 'e':
-			digit = 14;
-			break;
-		case 'f':
-			digit = 15;
-			break;
-		case 'A':
-			digit = 10;
-			break;
-		case 'B':
-			digit = 11;
-			break;
-		case 'C':
-			digit = 12;
-			break;
-		case 'D':
-			digit = 13;
-			break;
-		case 'E':
-			digit = 14;
-			break;
-		case 'F':
-			digit = 15;
-			break;
-		
-		default:
-			digit = str[i] - '0';
-			break;
-		}
-        result = result * 16 + digit;
-        i++;
-    }
-
-    return result;
-}
-
-// 10进制字符串转数字
-int stringToInt(char* str) {
-    int result = 0;
-    int sign = 1;
-    int i = 0;
-	//识别负数
-	if (str[0] == '-') 
-	{
-		sign = -1;
-		i = 1;
-	}
-
-    while (str[i] != '\0') {
-		if(str[i] == 'x'){
-			//识别到HEX
-			result =  sign * HEXToInt(&str[i+1]);
-			break;
-		}
-        int digit = str[i] - '0';
-        result = result * 10 + digit;
-        i++;
-    }
-
-	//printf("%s :stringToInt: %d\n",str, sign * result);
-    return sign * result;
-}
-
-
-//封装一个递归实现计算的函数
-int getRecursiveResult(Token* ts,unsigned token_num){
-
-	int index = searchDomOp(ts,token_num);
-
-	if(index == 0)//错误
-	{
-		Assert(0,"index 是 0\n");
-	}
-	if(index == -1)//转数字
-	{	
-		return stringToInt(ts->str);
-	}
-	if(index == -2)//去括号
-	{
-		ts++;
-		return getRecursiveResult(ts,token_num-2);
-	}
-	if(index == -3)//是负数
-	{	
-		//printf("捕获到负数\n");
-		Token li[3];
-		li[0].type = NUMBER;
-		strcpy(li[0].str,"0");
-		li[1].type = '-';
-		li[2].type = NUMBER;
-		strcpy(li[2].str,ts[1].str);
-		return getRecursiveResult(&li[0],3);
-	}
-
-	Token* part1 = ts;
-	Token* part2 = ts;
-
-
-	for(int i=0;i<index+1;i++){
-		part2++;
-	}
-
-	//递归开始部分
-	int res = -443;
-	int res1 = -444;
-	int res2 = -445;
-	char icon[10] = "UNKNOW";
-
-	res1 = getRecursiveResult(part1,index);
-	res2 = getRecursiveResult(part2,token_num-index-1);
-
-	switch ((ts[index].type))
-	{
-	case '+':
-		res = res1+res2;
-		strcpy(icon,"+");
-		break;
-
-	case '-':
-		res = res1-res2;
-		strcpy(icon,"-");
-		break;
-
-	case '*':
-		res = res1*res2;
-		strcpy(icon,"*");
-		break;
-
-	case '/':
-		res = res1/res2;
-		strcpy(icon,"/");
-		break;
-	
-	case AND:
-		res = res1&&res2;
-		strcpy(icon,"&&");	
-		break;
-
-	case OR:
-		res = res1&&res2;
-		strcpy(icon,"||");
-		break;
-
-	case EQ:
-		res = res1==res2;
-		strcpy(icon,"==");
-		break;
-
-	case NOT_EQ:
-		res = res1!=res2;
-		strcpy(icon,"!=");
-		break;
-
-
-	default:
-		panic("err in switch. \n");
-		break;
-	}
-
-
-	//printf("%d %s %d = %d\n",res1,icon,res2,res);
 	return res;
 }
 
+// 递归函数
+uint32_t getRecursiveResult(uint32_t left,uint32_t right){
+	if (left>right)
+		assert(0);
 
-//外部调用函数，这里再做一层封装，作为递归表达式的求值处理
-int expr(char *e, bool *success) 
-{
-	//解析所有token
+	//纯数字或寄存器，字符串转换
+	if(left == right)
+	{
+		uint32_t n;
+		switch (tokens[right].type)
+		{
+		case HEX:
+			n = strtoull(tokens[right].str,NULL,16);
+			break;
+		case NUMBER:
+			n = strtoull(tokens[right].str,NULL,10);
+			break;
+		
+		case REG:
+			n = getREG(tokens[right].str);
+			break;
+		}
+
+	
+		return n;
+	}
+
+	//去括号
+	else if(checkBracket(left,right) == true)
+		return getRecursiveResult(left+1,right-1);
+	//递归计算
+	else
+	{
+		uint32_t OpIndex=searchDomOp(left,right);
+
+		switch (tokens[OpIndex].type)
+		{
+		case NGE:
+			return -getRecursiveResult(left+1,right);
+			break;
+		case NOT:
+			return !getRecursiveResult(left+1,right);
+			break;
+		case DEREF:
+			return mem_read(getRecursiveResult(left+1,right),4);
+			break;
+		default:
+			break;
+		}
+			
+
+		uint32_t left_res=getRecursiveResult(left,OpIndex-1);
+		uint32_t right_res=getRecursiveResult(OpIndex+1,right);
+
+		int res=0;
+		switch(tokens[OpIndex].type)
+		{
+			case '+': res = left_res + right_res;break;
+			case '-': res = left_res - right_res;break;
+			case '*': res = left_res * right_res;break;
+			case '/': res = left_res / right_res;break;
+			case EQ: res = left_res == right_res;break;
+			case NEQ: res = left_res != right_res;break;
+			case AND: res = left_res && right_res;break;
+			case OR: res = left_res || right_res;break;
+			default:
+				Assert(0,"[ERROR] Unknown symbol.\n");
+		}
+		return res;
+	}
+}
+
+// 检查括号完整性,这里调整了之前对正则表达式的要求
+bool checkBracket(uint32_t left,uint32_t right){
+	int BracketNum=0;
+	if(tokens[left].type!='(' || tokens[right].type!=')')
+	{
+		return false;
+	}
+	while(left <= right)
+	{
+		if(BracketNum<0)
+			return false;
+		if(tokens[left].type=='(')
+			BracketNum++;
+		if(tokens[left].type==')')
+			BracketNum--;
+		if(BracketNum == 0)
+			break;
+		left++;
+	}
+
+	//只能允许一个括号
+	if(left == right)
+		return true;
+	else
+		return false;
+}
+
+//找到dominant operator
+uint32_t searchDomOp(uint32_t left, uint32_t right){	
+	int BracketNum = 0;
+	int OpIndex = left;
+	int OpRank = 0;
+
+	for(;left<=right;left++)
+	{
+		// 跳过数据类型
+		if(tokens[left].type == NUMBER || tokens[left].type == HEX || tokens[left].type == NOT || tokens[left].type == DEREF || tokens[left].type == REG || tokens[left].type == NGE)
+			continue;
+		
+		// 跳过括号
+		else if(tokens[left].type == '(')
+		{
+			BracketNum++;
+			left++;
+
+			int max_len = 0;
+			// 检查匹配
+			while(BracketNum!=0)
+			{
+				if(tokens[left].type == '(')
+					BracketNum++;
+				else if(tokens[left].type == ')')
+					BracketNum--;
+				left++;
+				if(max_len++ == 0)
+					Assert(0,"[ERROR] Expression error.\n");
+			}
+			left--;
+		}
+		
+		else if(tokens[left].type == NGE)
+		{
+			if(OpRank<=2)
+			{
+				OpIndex=left;
+				OpRank=2;
+			}
+		}
+		else if(tokens[left].type == '/' || tokens[left].type =='*')
+		{
+			if(OpRank<=3)
+			{
+				OpIndex=left;
+				OpRank=3;
+			}
+		}
+		else if(tokens[left].type == '+' || tokens[left].type =='-')
+		{
+			if(OpRank<=4)
+			{
+				OpIndex=left;
+				OpRank=4;
+			}
+		}
+		else if(tokens[left].type == EQ || tokens[left].type ==NEQ)
+		{
+			if(OpRank<=7)
+			{
+				OpIndex=left;
+				OpRank=7;
+			}
+		}
+		else if(tokens[left].type == AND)
+		{
+			if(OpRank<=11)
+			{
+				OpIndex=left;
+				OpRank=11;
+			}
+		}
+		else if(tokens[left].type == OR)
+		{
+			if(OpRank<=12)
+			{
+				OpIndex=left;
+				OpRank=12;
+			}
+		}
+	}
+	return OpIndex;
+
+}
+
+
+uint32_t expr(char *e, bool *success) {
 	if(!make_token(e)) {
 		*success = false;
 		return 0;
 	}
-	*success = true;
-
-	//在这里替换所有寄存器代号为具体值
-	Token* ptr = tokens;
-	for(int i=0;i<nr_token;i++,ptr++)
-	{
-		if(ptr->type == REG)
-		{
-			ptr->type = NUMBER;
-			char* res = getREG(ptr->str);
-			strcpy(ptr->str,res);
-		}
-	}
-
-	int result = getRecursiveResult(tokens,nr_token);
-	printf("expr result:%d\n",result);
-
-	return result;
+	return getRecursiveResult(0,nr_token-1);
 }
 
-
-// 最终对外实现函数，返回值的提示之类的还没做，先实现核心功能
+// 最终对外实现函数
 int callRegExp(char* str){
 	bool suc = 0;
 	bool* psuc = &suc;
 
-	//初始化
-	for(int i=0;i<TOKENS_SIZE;i++){
-
-		(tokens[i]).type = UNCATCH_TOKEN;
-		
-		for(int j=0; j<TOKEN_STR_SIZE; j++){
-			(tokens[i]).str[j] = '\0';
-		}
-	}
 
 	int result = expr(str,psuc);
-
-	if(suc == 0){
-		assert(0);
-	}
+	printf("expr result:%d\n",result);
 	return result;
 }
