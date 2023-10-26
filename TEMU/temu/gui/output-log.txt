@@ -1,21 +1,8 @@
 Welcome to TEMU!
 The executable is WSLENV=.
 For help, type "help"
-(temu) step: 1
-       0:   15 00 80 04         lu12i.w	a0,	0x80400
-(temu) [1;34m[./temu/src/monitor/expr.c,137,make_token] match rules[0] = "\$pc" at position 0 with len 3: $pc[0m
-pc result:-2147483644
-expr result:-2147483644
-(temu) (temu) [1;34m[./temu/src/monitor/expr.c,137,make_token] match rules[0] = "\$pc" at position 0 with len 3: $pc[0m
-pc result:-2147483644
-expr result:-2147483644
-(temu) (temu) step: 1
-       4:   03 84 00 85         ori	$a1,	a0,	0x100
-(temu) [1;34m[./temu/src/monitor/expr.c,137,make_token] match rules[0] = "\$pc" at position 0 with len 3: $pc[0m
-pc result:-2147483640
-expr result:-2147483640
-(temu) (temu) step: 1
-       8:   03 83 fc 0c         ori	$t0,	$zero,	0x0ff
-(temu) [1;34m[./temu/src/monitor/expr.c,137,make_token] match rules[0] = "\$pc" at position 0 with len 3: $pc[0m
-pc result:-2147483636
-expr result:-2147483636
+(temu) p $pc
+[1;34m[./temu/src/monitor/expr.c,87,make_token] match rules[15] = "\$[a-z]*" at position 0 with len 3: $pc[0m
+expr result:-2147483648
+(temu) 
+(temu) 

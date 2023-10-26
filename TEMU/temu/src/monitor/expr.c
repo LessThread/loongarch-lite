@@ -280,7 +280,7 @@ uint32_t searchDomOp(uint32_t left, uint32_t right){
 				else if(tokens[left].type == ')')
 					BracketNum--;
 				left++;
-				if(max_len++ == 0)
+				if(max_len++ == 1000)
 					Assert(0,"[ERROR] Expression error.\n");
 			}
 			left--;
