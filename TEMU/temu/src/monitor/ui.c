@@ -12,7 +12,7 @@ void cpu_exec(uint32_t);
 void display_reg();
 void display_watcher();
 void delete_wp(int id);
-bool callRegExp(char* str);
+int callRegExp(char* str);
 WP* new_wp();
 
 
@@ -71,6 +71,7 @@ static int cmd_x(char* args);
 static int cmd_w(char* args);
 static int cmd_d(char* args);
 static int cmd_pc(char* args);
+static int cmd_ma(char* args);
 
 static struct {
 	char *name;
@@ -87,7 +88,8 @@ static struct {
 	{ "w","Set up monitoring points",cmd_w},
 	{ "d","Delete Watchpoint",cmd_d},
 	{ "pc","Watch $pc",cmd_pc},
-	{"n","next",cmd_si}
+	{"n","next",cmd_si},
+	{"ma","all memory",cmd_ma}
 	/* TODO: Add more commands */
 
 };
@@ -258,7 +260,7 @@ static int cmd_x(char* args){
 	}
 
 	//这个部分之后实现表达式求值,记得错误处理
-	uint32_t Addr = callRegExp(args_p);
+	int Addr = callRegExp(args_p);
 	printf("args:%s,Addr:%.8x\n",args_p,Addr);
 
 	//输出内存数据结果
@@ -332,4 +334,17 @@ static int cmd_d(char* args){
 static int cmd_pc(char* args){
 	printf("$PC:0x%x  %d\n",cpu.pc,cpu.pc);
 	return 1;
+}
+
+static int cmd_ma(char* args){
+	//输出内存数据结果
+	int Addr = 0;
+    for(int i=0;i<4194390;i++)
+	{	int res = mem_read(Addr, 4);
+		if(res!=0)
+			printf("0x%x:    0x%.8x\n",Addr,res);
+		Addr+=4;
+	}
+	return 0;
+
 }

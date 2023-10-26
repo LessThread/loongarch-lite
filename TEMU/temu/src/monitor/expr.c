@@ -208,7 +208,7 @@ int HEXToInt(char* str){
         result = result * 16 + digit;
         i++;
     }
-	printf("hex res:%d--\n",result);
+	//printf("hex res:%d--\n",result);
     return result;
 }
 
@@ -225,7 +225,7 @@ int getRecursiveResult(uint32_t left,uint32_t right){
 		switch (tokens[right].type)
 		{
 		case HEX:
-			printf("to:%s--\n",tokens[right].str);
+			//printf("to:%s--\n",tokens[right].str);
 			strcat(tokens[right].str,"\0");
 			n = HEXToInt(tokens[right].str);
 			break;

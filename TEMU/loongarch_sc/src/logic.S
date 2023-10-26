@@ -17,11 +17,12 @@ main:
     ori $t7,$t1,0x011       # $t7 = 0x1b
     lu12i.w $t8,12          # $t8 = 0xc000
     pcaddu12i $s0,12        
-    #st.b $t1,$t0,0xb        
-    #ld.b $s1,$t0,0xb        
-    #st.w $t1,$t0,0xb        
-    #ld.w $s2,$t0,0xb
+    addi.w $s4,$zero,0x90 #存储偏移
+    st.b $t1,$s4,0x10        
+    ld.b $s1,$t0,0x10        
+    st.w $t7,$s4,0x20       
     beq $t0,$t1,end         # 不等不跳
+    ld.w $s2,$s4,0x20
     add.w $s3,$t2,$zero     # $s3 = 0x1  
     beq $t1,$t1,equala      # 相等跳转equala  
 end:
