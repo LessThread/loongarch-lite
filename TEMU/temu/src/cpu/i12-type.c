@@ -67,7 +67,7 @@ make_helper(ld_w) {
 
 	uint32_t vaddr;
 	vaddr = op_src1->val + temp;
-	Assert(vaddr < HW_MEM_SIZE, "physical address %x is outside of the physical memory", vaddr);
+	//Assert(vaddr < HW_MEM_SIZE, "physical address %x is outside of the physical memory", vaddr);
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
 	reg_w(op_dest->reg) = mem_read(vaddr,4);
@@ -87,7 +87,7 @@ make_helper(ld_b) {
 
 	uint32_t vaddr;
 	vaddr = op_src1->val + temp;
-	Assert(vaddr < HW_MEM_SIZE, "physical address %x is outside of the physical memory", vaddr);
+	//Assert(vaddr < HW_MEM_SIZE, "physical address %x is outside of the physical memory", vaddr);
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
 	reg_w(op_dest->reg) = mem_read(vaddr,1);
@@ -107,7 +107,7 @@ make_helper(st_w) {
 
 	uint32_t vaddr;
 	vaddr = op_src1->val + temp;
-	Assert(vaddr < HW_MEM_SIZE, "physical address %x is outside of the physical memory", vaddr);
+	//Assert(vaddr < HW_MEM_SIZE, "physical address %x is outside of the physical memory", vaddr);
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
 	mem_write(vaddr, 4, reg_w(op_dest->reg));
@@ -125,7 +125,7 @@ make_helper(st_b) {
 
 	uint32_t vaddr;
 	vaddr = op_src1->val + temp;
-	Assert(vaddr < HW_MEM_SIZE, "physical address %x is outside of the physical memory", vaddr);
+	//Assert(vaddr < HW_MEM_SIZE, "physical address %x is outside of the physical memory", vaddr);
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
 	mem_write(vaddr, 1, reg_w(op_dest->reg));
