@@ -261,8 +261,12 @@ static int cmd_x(char* args){
 	uint32_t Addr = callRegExp(args_p);
 
 	//输出内存数据结果
-
-	printf("0x%x:    0x%.8x\n",Addr,mem_read(Addr, N));
+	int i;
+    for(i=0;i<N;i++)
+	{
+		printf("0x%x:    0x%.8x\n",Addr,mem_read(Addr, 4));
+		Addr+=4;
+	}
 	return 0;
 
 }
