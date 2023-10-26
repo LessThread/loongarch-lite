@@ -4,7 +4,7 @@
 #include <regex.h>
 #include <stdlib.h>
 
-#define TOKEN_SIZE 32
+#define TOKEN_SIZE 128
 
 
 enum {
@@ -42,7 +42,7 @@ static struct rule {
 
 static regex_t re[NR_REGEX];
 
-uint32_t getRecursiveResult(uint32_t left,uint32_t right);
+int getRecursiveResult(uint32_t left,uint32_t right);
 bool checkBracket(uint32_t left,uint32_t right);
 uint32_t searchDomOp(uint32_t left, uint32_t right);
 
@@ -154,8 +154,67 @@ int getREG(const char *regName)
 	return res;
 }
 
+int HEXToInt(char* str){
+	int result = 0;
+    int i = 2;
+	
+
+    while (str[i] != '\0') 
+	{
+		int digit = str[i] - '0';
+		switch (str[i])
+		{
+		case 'a':
+			digit = 10;
+			break;
+		case 'b':
+			digit = 11;
+			break;
+		case 'c':
+			digit = 12;
+			break;
+		case 'd':
+			digit = 13;
+			break;
+		case 'e':
+			digit = 14;
+			break;
+		case 'f':
+			digit = 15;
+			break;
+		case 'A':
+			digit = 10;
+			break;
+		case 'B':
+			digit = 11;
+			break;
+		case 'C':
+			digit = 12;
+			break;
+		case 'D':
+			digit = 13;
+			break;
+		case 'E':
+			digit = 14;
+			break;
+		case 'F':
+			digit = 15;
+			break;
+		
+		default:
+			digit = str[i] - '0';
+			break;
+		}
+        result = result * 16 + digit;
+        i++;
+    }
+	printf("hex res:%d--\n",result);
+    return result;
+}
+
+
 // 递归函数
-uint32_t getRecursiveResult(uint32_t left,uint32_t right){
+int getRecursiveResult(uint32_t left,uint32_t right){
 	if (left>right)
 		assert(0);
 
@@ -166,7 +225,9 @@ uint32_t getRecursiveResult(uint32_t left,uint32_t right){
 		switch (tokens[right].type)
 		{
 		case HEX:
-			n = strtoull(tokens[right].str,NULL,16);
+			printf("to:%s--\n",tokens[right].str);
+			strcat(tokens[right].str,"\0");
+			n = HEXToInt(tokens[right].str);
 			break;
 		case NUMBER:
 			n = strtoull(tokens[right].str,NULL,10);
@@ -353,6 +414,15 @@ int callRegExp(char* str){
 	bool suc = 0;
 	bool* psuc = &suc;
 
+	//初始化
+	for(int i=0;i<TOKEN_SIZE;i++){
+
+		(tokens[i]).type = 0;
+		
+		for(int j=0; j<TOKEN_SIZE; j++){
+			(tokens[i]).str[j] = '\0';
+		}
+	}
 
 	int result = expr(str,psuc);
 	printf("expr result:%d\n",result);
