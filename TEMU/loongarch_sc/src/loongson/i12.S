@@ -24,18 +24,19 @@ main:
     # andi
     andi $s2,$t4,0xF      #0x4
     
+    ld $x,num1;
+
     # st_w
-    st.w $t5,$x,0x10      #0x8010:    0x08001c01
+    st.w $t5,$x,0x0      #0x8010:    0x08001c01
 
     # ld_w
-    ld.w $s3,$x,0x10      #s3 = 0x08001c01
+    ld.w $s3,$x,0x0      #s3 = 0x08001c01
     
     # st_b
-    st.b $t5,$x,0x10
+    st.b $t5,$x,0x0
 
     # ld_b
-    ld.b $s4,$x,0x10      #s4 = 1
+    ld.b $s4,$x,0x0      #s4 = 1
 
-    # 汇编结束
-    HIT_GOOD_TRAP		#stop temu
+
 

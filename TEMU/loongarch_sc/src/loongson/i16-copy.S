@@ -15,20 +15,9 @@ main:
     addi.w $s0,$zero,0x1    
     beq $t1,$t1,equalb      # 相等跳转equalb
     nop
-    addi.w $s1,$zero,0x1
-    
-
-
-    # bne
-equalb:
-    bne $t0,$t0,end      # 相等不跳
-    nop
-    addi.w $s2,$zero,0x1      
-    bne $t0,$t1,equala      # 不等跳转
-    nop
-    addi.w $s3,$zero,0x1
-    HIT_GOOD_TRAP 
-
+    addi.w $s1,$zero,0x1 
+end:
+    addi.w $s6,$zero,0x1
     # bge
 equala:
     bge $t0,$t1,end              # 小于不跳
@@ -37,12 +26,18 @@ equala:
     bge $t1,$t0,end              # 大于跳转
     nop
     addi.w $s5,$zero,0x1 
+    # bne
+equalb:
+    bne $t0,$t0,end      # 相等不跳
+    nop
+    addi.w $s2,$zero,0x1      
+    bne $t0,$t1,equala      # 不等跳转
+    nop
+    addi.w $s3,$zero,0x1
 
-    HIT_GOOD_TRAP
 
-end:
-    addi.w $s6,$zero,0x1
-    HIT_GOOD_TRAP
+
+
 
 
     

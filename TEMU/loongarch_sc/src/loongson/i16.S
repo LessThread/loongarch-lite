@@ -27,7 +27,7 @@ equalb:
     bne $t0,$t1,equala      # 不等跳转
     nop
     addi.w $s3,$zero,0x1
-    HIT_GOOD_TRAP 
+    
 
     # bge
 equala:
@@ -38,11 +38,10 @@ equala:
     nop
     addi.w $s5,$zero,0x1 
 
-    HIT_GOOD_TRAP
 
 end:
     addi.w $s6,$zero,0x1
-    HIT_GOOD_TRAP
+    
 
 
     
