@@ -70,6 +70,8 @@ make_helper(ld_w) {
 	//Assert(vaddr < HW_MEM_SIZE, "physical address %x is outside of the physical memory", vaddr);
     //指令中所指vaddr指的是虚拟吗？地址可能存在问题，未完全按照指令集定义进行实现
     //是否需要加转换
+	printf("temp:%d,vaddr:%.8x->%.8x\n",temp,vaddr,vaddr& 0x7fffffff);
+	vaddr = vaddr& 0x7fffffff;
 	reg_w(op_dest->reg) = mem_read(vaddr,4);
 	sprintf(assembly, "ld.w  %s,  %s,  0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), (unsigned int)strtoul(REG_NAME(op_src2->reg), NULL, 10));
 	sprintf(golden_trace,"%s    0x%08x",REG_NAME(op_dest->reg),reg_w(op_dest->reg));

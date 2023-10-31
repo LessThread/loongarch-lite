@@ -29,6 +29,7 @@ make_helper(lu12i_w) {
 make_helper(pcaddu12i){
 
 	decode_i20_type(instr);
+	//printf("val:%.8x->%.8x\n",op_src2->val,op_src2->val>>4);
 	reg_w(op_dest->reg) = (op_src2->val << 12) + cpu.pc;
 	sprintf(assembly, "pcaddu12i  %s,  0x%04x", REG_NAME(op_dest->reg), op_src2->imm);
 	sprintf(golden_trace,"%s    0x%08x",REG_NAME(op_dest->reg),reg_w(op_dest->reg));

@@ -1,22 +1,33 @@
 #include "trap.h"
-   .globl main
-   .text
+.data
+   n1: .half 0x01FF
+   n2: .half 0x01FF
+   n3: .half 0x01FF
+   n4: .half 0x01FF
+   num1:   .word 0x01FFFFFF      # 第一个整数
+   num2:   .word 0x02FFFFFF      # 第一个整数
+   num3:   .word 0x03FFFFFF     # 第一个整数
+   num4:   .word 0x04FFFFFF      # 第二个整数
+   num5:   .word 0x05FFFFFF      # 第二个整数
+.text
+.globl main
 main:
-    # 寄存器初始化
-    addi.w $t1,$zero,0x1
-    addi.w $t2,$zero,0x2
-    addi.w $t3,$zero,0x3
-    addi.w $t4,$zero,0x4
-    addi.w $t5,$zero,0x5
+   # 寄存器初始化
+   lu12i.w $s7, 0x0400     
+   ori $s7, $s7, 0x0000 #0x00400000
+   
+   pcaddu12i  $t1,0x1
+   ld.w $t0,$s7,0x4
 
-    # lu12i_w
-    lu12i.w $s0,0x11
-    lu12i.w $s1,0xF
+   la.global $a1,n1
+   la.global $a2,n2
+   la.global $a3,n3
 
-    # pcaddu12i
-    pcaddu12i $s2,0x12
-    pcaddu12i $s3,0xF
+   la.got $s1, num1
+   la.abs $s2, num2
+   la $s3, num3
+   la $s4, num4
 
-    # 汇编结束
-    HIT_GOOD_TRAP		#stop temu
+    
+    
 
