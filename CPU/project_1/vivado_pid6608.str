@@ -1,0 +1,126 @@
+/*
+
+Xilinx Vivado v2018.3 (64-bit) [Major: 2018, Minor: 3]
+SW Build: 2405991 on Thu Dec  6 23:38:27 MST 2018
+IP Build: 2404404 on Fri Dec  7 01:43:56 MST 2018
+
+Process ID (PID): 6608
+License: Customer
+
+Current time: 	Wed Oct 25 11:02:18 CST 2023
+Time zone: 	China Standard Time (Asia/Shanghai)
+
+OS: Windows 10
+OS Version: 10.0
+OS Architecture: amd64
+Available processors (cores): 16
+
+Screen size: 1920x1080
+Screen resolution (DPI): 120
+Available screens: 1
+Available disk space: 106 GB
+Default font: family=Dialog,name=Dialog,style=plain,size=15
+
+Java version: 	9.0.4 64-bit
+Java home: 	E:/Xilinx/Vivado/2018.3/tps/win64/jre9.0.4
+Java executable location: 	E:/Xilinx/Vivado/2018.3/tps/win64/jre9.0.4/bin/java.exe
+Java initial memory (-Xms): 	128 MB
+Java maximum memory (-Xmx):	 3 GB
+
+
+User name: 	24121
+User home directory: C:/Users/24121
+User working directory: C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1
+User country: 	CN
+User language: 	zh
+User locale: 	zh_CN
+
+RDI_BASEROOT: E:/Xilinx/Vivado
+HDI_APPROOT: E:/Xilinx/Vivado/2018.3
+RDI_DATADIR: E:/Xilinx/Vivado/2018.3/data
+RDI_BINDIR: E:/Xilinx/Vivado/2018.3/bin
+
+Vivado preferences file location: C:/Users/24121/AppData/Roaming/Xilinx/Vivado/2018.3/vivado.xml
+Vivado preferences directory: C:/Users/24121/AppData/Roaming/Xilinx/Vivado/2018.3/
+Vivado layouts directory: C:/Users/24121/AppData/Roaming/Xilinx/Vivado/2018.3/layouts
+PlanAhead jar file location: 	E:/Xilinx/Vivado/2018.3/lib/classes/planAhead.jar
+Vivado log file location: 	C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/vivado.log
+Vivado journal file location: 	C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/vivado.jou
+Engine tmp dir: 	C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/.Xil/Vivado-6608-DESKTOP-9KI73P1
+
+Xilinx Environment Variables
+----------------------------
+XILINX: E:/Xilinx/Vivado/2018.3/ids_lite/ISE
+XILINX_DSP: E:/Xilinx/Vivado/2018.3/ids_lite/ISE
+XILINX_PLANAHEAD: E:/Xilinx/Vivado/2018.3
+XILINX_SDK: E:/Xilinx/SDK/2018.3
+XILINX_VIVADO: E:/Xilinx/Vivado/2018.3
+XILINX_VIVADO_HLS: E:/Xilinx/Vivado/2018.3
+
+
+GUI allocated memory:	128 MB
+GUI max memory:		3,072 MB
+Engine allocated memory: 603 MB
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+// TclEventType: PROJECT_OPEN_DIALOG
+// bx (cp):  Open Project : addNotify
+// Opening Vivado Project: C:\Users\24121\Desktop\minimip32-lite-master\minimip32-lite-master\CPU\project_1\project_1.xpr. Version: Vivado v2018.3 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// Tcl Message: open_project C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.xpr 
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 85 MB (+86593kb) [00:00:08]
+// [Engine Memory]: 645 MB (+524814kb) [00:00:08]
+// [GUI Memory]: 97 MB (+8630kb) [00:00:08]
+// WARNING: HEventQueue.dispatchEvent() is taking  2555 ms.
+// Tcl Message: open_project C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.xpr 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'E:/Xilinx/Vivado/2018.3/data/ip'. 
+// HMemoryUtils.trashcanNow. Engine heap size: 690 MB. GUI used memory: 52 MB. Current time: 10/25/23, 11:02:22 AM CST
+// [Engine Memory]: 690 MB (+13443kb) [00:00:10]
+// Tcl Message: open_project: Time (s): cpu = 00:00:14 ; elapsed = 00:00:06 . Memory (MB): peak = 719.000 ; gain = 104.254 
+// Project name: project_1; location: C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1; part: xc7k70tfbv676-1
+dismissDialog("Open Project"); // bx (cp)
+// a (cp): Critical Messages: addNotify
+// Tcl Message: update_compile_order -fileset sources_1 
+// Elapsed time: 319 seconds
+selectButton(PAResourceAtoD.CmdMsgDialog_OK, "OK"); // f (a)
+dismissDialog("Critical Messages"); // a (cp)
+// [GUI Memory]: 103 MB (+1151kb) [00:08:36]
+// WARNING: HEventQueue.dispatchEvent() is taking  1591 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  1759 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  450842 ms.
+// HMemoryUtils.trashcanNow. Engine heap size: 707 MB. GUI used memory: 51 MB. Current time: 10/25/23, 11:38:31 AM CST
+// Elapsed time: 2147 seconds
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, MiniMIPS32_SYS (MiniMIPS32_SYS.v)]", 2); // B (D, cp)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, MiniMIPS32_SYS (MiniMIPS32_SYS.v), minimips32 : MiniMIPS32 (MiniMIPS32.v)]", 5); // B (D, cp)
+// PAPropertyPanels.initPanels (if_stage.v) elapsed time: 0.2s
+// Elapsed time: 35 seconds
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, MiniMIPS32_SYS (MiniMIPS32_SYS.v), minimips32 : MiniMIPS32 (MiniMIPS32.v), if_stage0 : if_stage (if_stage.v)]", 6, false); // B (D, cp)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, MiniMIPS32_SYS (MiniMIPS32_SYS.v), minimips32 : MiniMIPS32 (MiniMIPS32.v), if_stage0 : if_stage (if_stage.v)]", 6, false, false, false, false, false, true); // B (D, cp) - Double Click
