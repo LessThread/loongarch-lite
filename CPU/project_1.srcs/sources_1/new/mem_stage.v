@@ -1,6 +1,8 @@
 `include "defines.v"
 
 module mem_stage (
+    input  wire 					    cpu_clk_50M, //new
+    input  wire 					    cpu_rst_n,   //new
 
     // 从执行阶段获得的信息
     input  wire [`ALUOP_BUS     ]       mem_aluop_i,
@@ -20,7 +22,7 @@ module mem_stage (
     output wire [`INST_ADDR_BUS] 	    debug_wb_pc,  // 供调试使用的PC值，上板测试时务必删除该信号
     
     output wire  					    mem_mreg_o,  //new
-    output reg [`REG_BUS       ]       mem_dm_o   //new
+    output wire [`REG_BUS       ]       mem_dm_o   //new
     
     );
     wire [3 : 0]           dre;
@@ -40,15 +42,18 @@ module mem_stage (
     .mcu_we(we)
     );
     
-    always @(*) begin
-        case(dre)
-            4'b1000 : mem_dm_o = {28'b0, dm[31:24]};
-            4'b0100 : mem_dm_o = {28'b0, dm[23:16]};
-            4'b0010 : mem_dm_o = {28'b0, dm[15:8]};
-            4'b0001 : mem_dm_o = {28'b0, dm[7:0]}; 
-            default : mem_dm_o = 32'b0;
-        endcase
-    end
+    data_ram data_ram0 (
+        .clka(cpu_clk_50M),         // input wire clka
+        .ena(dce),                  // input wire ena
+        .wea(we),                   // input wire [3 : 0] wea
+        .addra(mem_wd_i[12:2]),     // input wire [10 : 0] addra    这个取的位置不是很确定
+        .dina(mem_din_i),           // input wire [31 : 0] dina
+        .douta(dm)                  // output wire [31 : 0] douta
+    );
+    assign mem_dm_o = (dre == 4'b1000) ? {28'b0, dm[31:24]} :
+                      ((dre == 4'b0100) ? {28'b0, dm[23:16]} : 
+                      ((dre == 4'b0010) ? {28'b0, dm[15:8]}  :
+                      ((dre == 4'b0001) ? {28'b0, dm[7:0]}   : 32'b0)));
     
     assign debug_wb_pc = mem_debug_wb_pc;    // 上板测试时务必删除该语句 
 

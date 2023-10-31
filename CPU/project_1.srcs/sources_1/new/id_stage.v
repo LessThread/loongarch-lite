@@ -1,6 +1,9 @@
 `include "defines.v"
 
 module id_stage(
+    //添加传入寄存器的时钟和复位信号
+    input  wire 						cpu_clk_50M,
+	input  wire 						cpu_rst_n,
     
     // 从取指阶段获得的PC值
     input  wire [`INST_ADDR_BUS]    id_pc_i,
@@ -10,6 +13,10 @@ module id_stage(
     input  wire [`INST_BUS     ]    id_inst_i,
     
     //删除了input rd1和rd2
+    //添加了由wb阶段传到寄存器的信号
+    input  wire                     id_wbwreg_i,
+    input  wire [`REG_ADDR_BUS ]    id_wbwa_i,
+    input  wire [`REG_BUS      ]    id_wbwd_i,
     
     // 送至执行阶段的译码信息
     output wire [`ALUTYPE_BUS  ]    id_alutype_o,
@@ -69,9 +76,9 @@ module id_stage(
     wire [`REG_BUS      ]    rd2;
     
     regfile regfile0(.cpu_clk_50M(cpu_clk_50M), .cpu_rst_n(cpu_rst_n),
-        .we(wb_wreg_o), .wa(wb_wa_o), .wd(wb_wd_o),
-        .re1(re1), .ra1(ra1), .rd1(rd1),
-        .re2(re2), .ra2(ra2), .rd2(rd2)
+        .we(id_wbwreg_i), .wa(id_wbwa_i), .wd(id_wbwd_i),
+        .re1(rreg1), .ra1(ra1), .rd1(rd1),
+        .re2(rreg2), .ra2(ra2), .rd2(rd2)
     );
     
     // 读通用寄存器堆端口1的地址为rj字段，读端口2的地址为rk字段

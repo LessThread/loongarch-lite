@@ -1,0 +1,78 @@
+#-----------------------------------------------------------
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:38:27 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Wed Oct 25 15:42:31 2023
+# Process ID: 5988
+# Current directory: C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent17048 C:\Users\24121\Desktop\minimip32-lite-master\minimip32-lite-master\CPU\project_1\project_1.xpr
+# Log file: C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/vivado.log
+# Journal file: C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.xpr
+CRITICAL WARNING: [Project 1-19] Could not find the file 'C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/and_inst.coe'.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'E:/Xilinx/Vivado/2018.3/data/ip'.
+WARNING: [IP_Flow 19-2162] IP 'inst_rom' is locked:
+* IP definition 'Block Memory Generator (8.4)' for IP 'inst_rom' (customized with software release 2019.2) has a different revision in the IP Catalog.
+* Current project part 'xc7k70tfbv676-1' and the part 'xc7k325tffg900-2' used to customize the IP 'inst_rom' do not match.
+Please select 'Report IP Status' from the 'Tools/Report' menu or run Tcl command 'report_ip_status' for more information.
+WARNING: [IP_Flow 19-2162] IP 'clkdiv' is locked:
+* IP definition 'Clocking Wizard (6.0)' for IP 'clkdiv' (customized with software release 2019.2) has a different revision in the IP Catalog.
+* Current project part 'xc7k70tfbv676-1' and the part 'xc7k325tffg900-2' used to customize the IP 'clkdiv' do not match.
+Please select 'Report IP Status' from the 'Tools/Report' menu or run Tcl command 'report_ip_status' for more information.
+update_compile_order -fileset sources_1
+export_ip_user_files -of_objects  [get_files C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/inst_rom/inst_rom.xci] -no_script -reset -force -quiet
+remove_files  C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/inst_rom/inst_rom.xci
+INFO: [Device 21-403] Loading part xc7k70tfbv676-1
+WARNING: [IP_Flow 19-4067] Ignoring invalid widget type specified checkbox.Providing a default widget
+WARNING: [IP_Flow 19-4067] Ignoring invalid widget type specified checkbox.Providing a default widget
+INFO: [IP_Flow 19-3484] Absolute path of file 'c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/test1_inst.coe' provided. It will be converted relative to IP Instance files '../../../../../test1_inst.coe'
+create_ip -name blk_mem_gen -vendor xilinx.com -library ip -version 8.4 -module_name inst_rom -dir c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip
+set_property -dict [list CONFIG.Component_Name {inst_rom} CONFIG.Memory_Type {Single_Port_ROM} CONFIG.Write_Width_A {32} CONFIG.Write_Depth_A {2048} CONFIG.Read_Width_A {32} CONFIG.Write_Width_B {32} CONFIG.Read_Width_B {32} CONFIG.Register_PortA_Output_of_Memory_Primitives {false} CONFIG.Load_Init_File {true} CONFIG.Coe_File {C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/test1_inst.coe} CONFIG.Fill_Remaining_Memory_Locations {true} CONFIG.Port_A_Write_Rate {0}] [get_ips inst_rom]
+WARNING: [Vivado 12-3523] Attempt to change 'Component_Name' from 'inst_rom' to 'inst_rom' is not allowed and is ignored.
+INFO: [IP_Flow 19-3484] Absolute path of file 'c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/test1_inst.coe' provided. It will be converted relative to IP Instance files '../../../../../test1_inst.coe'
+generate_target {instantiation_template} [get_files c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/inst_rom_1/inst_rom.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'inst_rom'...
+update_compile_order -fileset sources_1
+generate_target all [get_files  c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/inst_rom_1/inst_rom.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'inst_rom'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'inst_rom'...
+INFO: [IP_Flow 19-1686] Generating 'Miscellaneous' target for IP 'inst_rom'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'inst_rom'...
+catch { config_ip_cache -export [get_ips -all inst_rom] }
+export_ip_user_files -of_objects [get_files c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/inst_rom_1/inst_rom.xci] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/inst_rom_1/inst_rom.xci]
+launch_runs -jobs 8 inst_rom_synth_1
+[Wed Oct 25 15:46:45 2023] Launched inst_rom_synth_1...
+Run output will be captured here: C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.runs/inst_rom_synth_1/runme.log
+export_simulation -of_objects [get_files c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/inst_rom_1/inst_rom.xci] -directory C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.ip_user_files/sim_scripts -ip_user_files_dir C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.ip_user_files -ipstatic_source_dir C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.cache/compile_simlib/modelsim} {questa=C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.cache/compile_simlib/questa} {riviera=C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.cache/compile_simlib/riviera} {activehdl=C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+WARNING: [IP_Flow 19-4067] Ignoring invalid widget type specified checkbox.Providing a default widget
+WARNING: [IP_Flow 19-4067] Ignoring invalid widget type specified checkbox.Providing a default widget
+INFO: [IP_Flow 19-3484] Absolute path of file 'c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/test1_data.coe' provided. It will be converted relative to IP Instance files '../../../../../test1_data.coe'
+create_ip -name blk_mem_gen -vendor xilinx.com -library ip -version 8.4 -module_name data_ram -dir c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip
+set_property -dict [list CONFIG.Component_Name {data_ram} CONFIG.Use_Byte_Write_Enable {true} CONFIG.Byte_Size {8} CONFIG.Write_Width_A {32} CONFIG.Write_Depth_A {2048} CONFIG.Read_Width_A {32} CONFIG.Write_Width_B {32} CONFIG.Read_Width_B {32} CONFIG.Register_PortA_Output_of_Memory_Primitives {false} CONFIG.Load_Init_File {true} CONFIG.Coe_File {C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/test1_data.coe}] [get_ips data_ram]
+WARNING: [Vivado 12-3523] Attempt to change 'Component_Name' from 'data_ram' to 'data_ram' is not allowed and is ignored.
+INFO: [IP_Flow 19-3484] Absolute path of file 'c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/test1_data.coe' provided. It will be converted relative to IP Instance files '../../../../../test1_data.coe'
+generate_target {instantiation_template} [get_files c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/data_ram/data_ram.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'data_ram'...
+update_compile_order -fileset sources_1
+generate_target all [get_files  c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/data_ram/data_ram.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'data_ram'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'data_ram'...
+INFO: [IP_Flow 19-1686] Generating 'Miscellaneous' target for IP 'data_ram'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'data_ram'...
+catch { config_ip_cache -export [get_ips -all data_ram] }
+export_ip_user_files -of_objects [get_files c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/data_ram/data_ram.xci] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/data_ram/data_ram.xci]
+create_ip_run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:06 . Memory (MB): peak = 1058.711 ; gain = 0.000
+launch_runs -jobs 8 data_ram_synth_1
+[Wed Oct 25 16:17:44 2023] Launched data_ram_synth_1...
+Run output will be captured here: C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.runs/data_ram_synth_1/runme.log
+export_simulation -of_objects [get_files c:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.srcs/sources_1/ip/data_ram/data_ram.xci] -directory C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.ip_user_files/sim_scripts -ip_user_files_dir C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.ip_user_files -ipstatic_source_dir C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.cache/compile_simlib/modelsim} {questa=C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.cache/compile_simlib/questa} {riviera=C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.cache/compile_simlib/riviera} {activehdl=C:/Users/24121/Desktop/minimip32-lite-master/minimip32-lite-master/CPU/project_1/project_1.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+exit
+INFO: [Common 17-206] Exiting Vivado at Wed Oct 25 16:34:26 2023...

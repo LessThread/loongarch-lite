@@ -65,7 +65,7 @@ module MiniMIPS32(
     wire [`REG_ADDR_BUS  ] mem_wa_o;
     wire [`REG_BUS 	     ] mem_dreg_o;
     wire  				   mem_mreg_o;  //new
-    reg [`REG_BUS       ]  mem_dm_o;   //new
+    wire [`REG_BUS       ]mem_dm_o;   //new
     wire 				   wb_wreg_i;
     wire [`REG_ADDR_BUS  ] wb_wa_i;
     wire [`REG_BUS       ] wb_dreg_i;
@@ -92,7 +92,8 @@ module MiniMIPS32(
         .if_pc(pc), .if_debug_wb_pc(if_debug_wb_pc), .id_pc(id_pc_i), .id_debug_wb_pc(id_debug_wb_pc_i)
     );
 
-    id_stage id_stage0(.id_pc_i(id_pc_i), 
+    id_stage id_stage0(.cpu_clk_50M(cpu_clk_50M), .cpu_rst_n(cpu_rst_n),
+        .id_pc_i(id_pc_i), 
         .id_inst_i(inst),
         .id_debug_wb_pc(id_debug_wb_pc_i),
         //.rd1(rd1), .rd2(rd2),
@@ -103,7 +104,10 @@ module MiniMIPS32(
         .id_wa_o(id_wa_o), .id_wreg_o(id_wreg_o),
         .id_mreg_o(id_mreg_o),   //new
         .id_din_o(id_din_o),     //new
-        .debug_wb_pc(id_debug_wb_pc_o)
+        .debug_wb_pc(id_debug_wb_pc_o),
+        .id_wbwreg_i(wb_wreg_o),
+        .id_wbwa_i(wb_wa_o),
+        .id_wbwd_i(wb_wd_o)
     );
     
     //该寄存器被移动至id_stage
@@ -147,7 +151,8 @@ module MiniMIPS32(
         .mem_debug_wb_pc(mem_debug_wb_pc_i)
     );
 
-    mem_stage mem_stage0(.mem_aluop_i(mem_aluop_i),
+    mem_stage mem_stage0(.cpu_clk_50M(cpu_clk_50M),.cpu_rst_n(cpu_rst_n),   //new
+        .mem_aluop_i(mem_aluop_i),
         .mem_wa_i(mem_wa_i), .mem_wreg_i(mem_wreg_i), .mem_wd_i(mem_wd_i),
         .mem_debug_wb_pc(mem_debug_wb_pc_i),
         .mem_mreg_i(mem_mreg_i), //new

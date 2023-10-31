@@ -1,14 +1,68 @@
-Vivado Simulator 2019.2
+Vivado Simulator 2018.3
 Time resolution is 1 ps
  Block Memory Generator module loading initial data...
  Block Memory Generator data initialization complete.
-Block Memory Generator module MiniMIPS32_SYS_tb.SoC.inst_rom0.inst.native_mem_module.blk_mem_gen_v8_4_4_inst is using a behavioral model for simulation which will not precisely model memory collision behavior.
+Block Memory Generator module MiniMIPS32_SYS_tb.SoC.inst_rom0.inst.native_mem_module.blk_mem_gen_v8_4_2_inst is using a behavioral model for simulation which will not precisely model memory collision behavior.
+ Block Memory Generator module loading initial data...
+ Block Memory Generator data initialization complete.
+Block Memory Generator module MiniMIPS32_SYS_tb.SoC.minimips32.mem_stage0.data_ram0.inst.native_mem_module.blk_mem_gen_v8_4_2_inst is using a behavioral model for simulation which will not precisely model memory collision behavior.
 --------------------------------------------------------------
 [                 317]ns
-reference: PC = 0xbfc00000, wb_rf_wnum = 0x03, wb_rf_wdata = 0x00001010
+reference: PC = 0x80000000, wb_rf_wnum = 0x0c, wb_rf_wdata = 0xxxxxxxxx
 --------------------------------------------------------------
 --------------------------------------------------------------
 [                 337]ns
-reference: PC = 0xbfc00004, wb_rf_wnum = 0x03, wb_rf_wdata = 0x00001010
+reference: PC = 0x80000004, wb_rf_wnum = 0x0d, wb_rf_wdata = 0xxxxxxxxx
 --------------------------------------------------------------
-$stop called at time : 2200 ns : File "D:/Work/vivado_project/MiniMIPS32/MiniMIPS32.srcs/sim_1/new/MiniMIPS32_SYS_tb.v" Line 33
+--------------------------------------------------------------
+[                 357]ns
+reference: PC = 0x80000008, wb_rf_wnum = 0x0c, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 377]ns
+reference: PC = 0x8000000c, wb_rf_wnum = 0x0e, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 397]ns
+reference: PC = 0x80000010, wb_rf_wnum = 0x0f, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 417]ns
+reference: PC = 0x80000014, wb_rf_wnum = 0x10, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 437]ns
+reference: PC = 0x80000018, wb_rf_wnum = 0x11, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 457]ns
+reference: PC = 0x8000001c, wb_rf_wnum = 0x12, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 477]ns
+reference: PC = 0x80000020, wb_rf_wnum = 0x13, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 497]ns
+reference: PC = 0x80000024, wb_rf_wnum = 0x14, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 517]ns
+reference: PC = 0x80000028, wb_rf_wnum = 0x17, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 537]ns
+reference: PC = 0x8000002c, wb_rf_wnum = 0x0d, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 557]ns
+reference: PC = 0x80000030, wb_rf_wnum = 0x18, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 577]ns
+reference: PC = 0x80000034, wb_rf_wnum = 0x0d, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------
+--------------------------------------------------------------
+[                 597]ns
+reference: PC = 0x80000038, wb_rf_wnum = 0x19, wb_rf_wdata = 0xxxxxxxxx
+--------------------------------------------------------------

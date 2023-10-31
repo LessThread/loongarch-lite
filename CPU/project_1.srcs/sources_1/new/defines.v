@@ -24,7 +24,7 @@
 `define UPPER_ENABLE    1'b1                // 立即数移位使能
 `define MREG_ENABLE     1'b1                // 写回阶段存储器结果选择信号
 `define BSEL_BUS        3 : 0               // 数据存储器字节选择信号宽度
-`define PC_INIT         32'hBFC00000        // PC初始值
+`define PC_INIT         32'h80000000        // PC初始值
 
 /*------------------- 指令字参数 -------------------*/
 `define INST_ADDR_BUS   31: 0               // 指令的地址宽度
